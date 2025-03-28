@@ -4,4 +4,37 @@
 
 <mapper namespace="com.example.shopping.comment.ReplayMapper">
 
+    <insert id="replaySave">
+        INSERT INTO comments
+        (replayId, commentId, content, writeId)
+        VALUES(
+            #{replayId}
+            , #{commentId}
+            , #{content}
+            , #{writeId}
+        );
+    </insert>
+
+    <update id="replayUpdate">
+        UPDATE replay
+        SET
+            rating=#{replay.content}
+        WHERE replayId=#{replay.replayId} AND commentId=#{replay.commentId}
+    </update>
+
+    <select id="replayList" resultType="Map">
+        SELECT
+            productName
+            , price
+            , cnt
+            , category
+            , explanation
+            , productId
+        FROM replay;
+    </select>
+
+    <delete id="commentDelete">
+        DELETE FROM replay
+        WHERE commentId=#{commentId} AND replayId=#{replayId}
+    </delete>
 </mapper>

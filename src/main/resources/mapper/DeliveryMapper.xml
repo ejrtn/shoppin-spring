@@ -4,4 +4,49 @@
 
 <mapper namespace="com.example.shopping.delivery.DeliveryMapper">
 
+    <insert id="deliverySave">
+        INSERT INTO deliveryList
+        (address, priceTotal, detail, userId, status, deliveryId)
+        VALUES(
+            #{address}
+            , #{priceTotal}
+            , #{detail}
+            , #{userId}
+            , #{status}
+            , #{deliveryId}
+        )
+    </insert>
+
+    <select id="deliveryList" resultType="Map">
+        SELECT
+            address
+            , priceTotal
+            , detail
+            , userId
+            , cdate
+            , status
+            , deliveryId
+        FROM deliveryList;
+    </select>
+
+    <select id="delivery">
+        SELECT
+        address
+        , priceTotal
+        , detail
+        , userId
+        , cdate
+        , status
+        , deliveryId
+        FROM deliveryList
+        WHERE deliveryId=#{deliveryId}
+    </select>
+    
+    <update id="deliveryUpdate">
+        UPDATE deliveryList
+        SET
+            address=#{address}
+            , status=#{status}
+        WHERE deliveryId=#{deliveryId}
+    </update>
 </mapper>

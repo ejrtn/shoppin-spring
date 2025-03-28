@@ -4,4 +4,41 @@
 
 <mapper namespace="com.example.shopping.comment.CommentMapper">
 
+    <insert id="commentSave">
+        INSERT INTO comments
+        (productName, price, cnt, category, explanation, productId)
+        VALUES(
+            #{comments.productName}
+            , #{comments.price}
+            , #{comments.cnt}
+            , #{comments.category}
+            , #{comments.explanation}
+            , #{comments.productId}
+        )
+    </insert>
+
+    <update id="commentUpdate">
+        UPDATE comments
+        SET
+            rating=${rating}
+            content=${content}
+            title=${title}
+        WHERE commentId=#{commentId}
+    </update>
+
+    <select id="commentList" resultType="Map">
+        SELECT
+            commentId
+            , rating
+            , content
+            , title
+            , productId
+            , writeId
+        FROM comments;
+    </select>
+
+    <delete id="commentDelete">
+        DELETE FROM comments
+        WHERE commentId=#{commentId}
+    </delete>
 </mapper>

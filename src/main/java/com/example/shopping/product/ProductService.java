@@ -1,5 +1,6 @@
 package com.example.shopping.product;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,23 +10,26 @@ import java.util.Map;
 @Service
 public class ProductService {
 
+    @Autowired
+    ProductMapper productMapper;
+
     public boolean productSave(ProductDto productDto){
-        return true;
+        return productMapper.productSave(productDto);
     }
 
-    public List<Map<String,String>> productList(ProductDto productDto){
-        return new ArrayList<>();
+    public List<ProductDto> productList(String saleYn){
+        return productMapper.productList(saleYn);
     }
 
     public boolean productUpdate(ProductDto productDto){
-        return true;
+        return productMapper.productUpdate(productDto);
     }
 
-    public int productMinus(String productName, int cnt){
-        return 1;
+    public int productMinus(String productId, int cnt){
+        return productMapper.productMinus(productId, cnt);
     }
 
-    public int productPlus(String productName, int cnt){
-        return 1;
+    public int productPlus(String productId, int cnt){
+        return productMapper.productPlus(productId, cnt);
     }
 }

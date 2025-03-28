@@ -3,18 +3,20 @@ package com.example.shopping.user;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Map;
+
 @Mapper
 public interface UserMapper {
 
-    boolean userSave(@Param("user") UserDto userDto);
+    boolean userSave(UserDto userDto);
 
-    boolean userdelete(@Param("user") UserDto userDto);
+    boolean userDelete(String userId);
 
-    boolean login(@Param("userId") String userId, @Param("password") String password);
+    Map<String,String> login(String userId, String password);
 
-    boolean infoUpdate(@Param("product") UserDto userDto);
+    boolean passwordUpdate(String userId, String password, String newPassword);
 
-    String searchId(@Param("name") String name, @Param("email") String email);
+    int findId(String name, String email);
 
-    String searchPassword(@Param("name") String name, @Param("email") String email, @Param("userId") String userId);
+    int findPassword(String name, String email, String userId);
 }

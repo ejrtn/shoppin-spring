@@ -4,4 +4,52 @@
 
 <mapper namespace="com.example.shopping.product.ProductMapper">
 
+    <insert id="productSave">
+        INSERT INTO products
+        (productName, price, cnt, category, explanation, productId)
+        VALUES(
+            #{productName}
+            , #{price}
+            , #{cnt}
+            , #{category}
+            , #{explanation}
+            , #{productId}
+        );
+    </insert>
+
+    <select id="productList" resultType="Map">
+        SELECT
+            productName
+            , price
+            , cnt
+            , category
+            , explanation
+            , productId
+            , saleYn
+        FROM products
+    </select>
+
+    <update id="productUpdate">
+        UPDATE products
+        SET
+            productName=#{productName}
+            , price=#{price}
+            , category=#{category}
+            , explanation=#{explanation}
+            , saleYn=#{saleYn}
+        WHERE productId=#{productId}
+    </update>
+
+    <update id="productMinus">
+        UPDATE products
+        SET cnt=cnt-#{cnt}
+        WHERE productId=#{productId}
+    </update>
+
+    <update id="productPlus">
+        UPDATE products
+        SET cnt=cnt+#{cnt}
+        WHERE productId=#{productId}
+    </update>
+
 </mapper>

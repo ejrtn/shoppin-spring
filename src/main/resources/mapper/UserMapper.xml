@@ -5,15 +5,60 @@
 <mapper namespace="com.example.shopping.user.UserMapper">
 
 
-    <insert id="insertMember">
-        INSERT INTO member (member_Id, username, age)
-        VALUES (#{member_Id}, #{member.username}, #{member.age})
+    <insert id="userSave">
+        INSERT INTO user
+        (name, userId, address, phonNumber, gender, password, yyyymmdd, email)
+        VALUES(
+            #{name}
+            , #{userId}
+            , #{address}
+            , #{phonNumber}
+            , #{gender}
+            , #{password}
+            , #{yyyymmdd}
+            , #{email}
+        )
     </insert>
 
-<!--    &lt;!&ndash;  Member select 쿼리&ndash;&gt;-->
-<!--    <select id="selectMember" resultType="com.gunsproject.guns.study.dto.MemberDto">-->
-<!--        SELECT * FROM member-->
-<!--        WHERE member_id = #{memberId}-->
-<!--    </select>-->
+    <update id="userDelete">
+        UPDATE user
+        SET deleteYn='Y'
+        WHERE userId=#{userId}
+    </update>
+
+    <select id="login" resultType="Map">
+        SELECT
+            name
+            , userId
+            , address
+            , phonNumber
+            , gender
+            , password
+            , yyyymmdd
+            , email
+            , deleteYn
+        FROM user
+        WHERE userId=#{userId} AND password=#{password}
+    </select>
+
+    <update id="passwordUpdate">
+        UPDATE user
+        SET password=#{newPassword}
+        WHERE userId=#{userId} AND password=#{password}
+    </update>
+
+    <select id="findId" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM user
+        WHERE name=#{name} AND email=#{email}
+    </select>
+
+    <select id="findPassword" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM user
+        WHERE name=#{name} AND email=#{email} AND userId=#{userId}
+    </select>
 
 </mapper>

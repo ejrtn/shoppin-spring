@@ -12,4 +12,6 @@ public class UserDto {
     private String gender;
     private String yyyymmdd;
     private String email;
+    private String address;
+    private String deleteYn;
 }

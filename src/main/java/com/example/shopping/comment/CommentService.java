@@ -1,5 +1,6 @@
 package com.example.shopping.comment;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,28 +10,34 @@ import java.util.Map;
 @Service
 public class CommentService {
 
+    @Autowired
+    CommentMapper commentMapper;
+
+    @Autowired
+    ReplayMapper replayMapper;
+
     public boolean commentSave(CommentDto commentDto){
-        return true;
+        return commentMapper.commentSave(commentDto);
     }
 
     public boolean commentUpdate(CommentDto commentDto){
-        return true;
+        return commentMapper.commentUpdate(commentDto);
     }
 
-    public List<Map<String,String>> commentList(CommentDto commentDto){
-        return new ArrayList<>();
+    public List<CommentDto> commentList(CommentDto commentDto){
+        return commentMapper.commentList(commentDto);
     }
 
     public boolean replaySave(ReplayDto replayDto){
-        return true;
+        return replayMapper.replaySave(replayDto);
     }
 
     public boolean replayUpdate(ReplayDto replayDto){
-        return true;
+        return replayMapper.replayUpdate(replayDto);
     }
 
-    public List<Map<String,String>> replayList(ReplayDto replayDto){
-        return new ArrayList<>();
+    public List<ReplayDto> replayList(ReplayDto replayDto){
+        return replayMapper.replayList(replayDto);
     }
 
 }
