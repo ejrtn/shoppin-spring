@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link href="/index.css" rel="stylesheet" />
+
+</head>
+<body>
+    <header th:replace="/header :: header"></header>
+
+    <div class="main">
+        <div class="product-list">
+            <div class="top">
+                <p>상의</p>
+                <label onclick="location.href='/listAll/상의'">전체보기</label>
+                <div class="list">
+                    <div class="product" th:each="top : ${top10}" th:if="${top.category == '상의'}" >
+                        <picture th:if="${top.category == '상의'}">
+                            <source th:srcset="${'/imgLoad?img='+top.img}" type="image/webp" />
+                            <a th:href="${'/sell?productId='+top.productId}">
+                                <img th:src="${'/imgLoad?img='+top.img}"/>
+                            </a>
+                        </picture>
+                        <div th:if="${top.category == '상의'}">
+                            <a th:href="${'/sell?productId='+top.productId}">
+                                <span>컴팩트 멀티 스포츠(짐웨어 러닝 워터) 여성 투인원쇼츠 (4컬러)</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="rank-1-5"></div>
+                <div class="rank-6-10"></div>
+            </div>
+            <div class="bottom">
+                <p>하의</p>
+                <label onclick="location.href='/listAll/하의'">전체보기</label>
+                <div class="list">
+                    <div class="product" th:each="top : ${top10}" th:if="${top.category == '하의'}" >
+                        <picture th:if="${top.category == '하의'}">
+                            <source th:srcset="${'/imgLoad?img='+top.img}" type="image/webp" />
+                            <a th:href="${'/sell?productId='+top.productId}">
+                                <img th:src="${'/imgLoad?img='+top.img}" />
+                            </a>
+                        </picture>
+                        <div th:if="${top.category == '하의'}">
+                            <a th:href="${'/sell?productId='+top.productId}">
+                                <span>컴팩트 멀티 스포츠(짐웨어 러닝 워터) 여성 투인원쇼츠 (4컬러)</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="rank-1-5"></div>
+                <div class="rank-6-10"></div>
+            </div>
+            <div class="shoes">
+                <p>신발</p>
+                <label onclick="location.href='/listAll/신발'">전체보기</label>
+                <div class="list">
+                    <div class="product" th:each="top : ${top10}" th:if="${top.category == '신발'}" >
+                        <picture th:if="${top.category == '신발'}">
+                            <source th:srcset="${'/imgLoad?img='+top.img}" type="image/webp" />
+                            <a th:href="${'/sell?productId='+top.productId}">
+                                <img th:src="${'/imgLoad?img='+top.img}" />
+                            </a>
+                        </picture>
+                        <div th:if="${top.category == '신발'}">
+                            <a th:href="${'/sell?productId='+top.productId}">
+                                <span>컴팩트 멀티 스포츠(짐웨어 러닝 워터) 여성 투인원쇼츠 (4컬러)</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="rank-1-5"></div>
+                <div class="rank-6-10"></div>
+            </div>
+        </div>
+        <div class="open-kakao">
+            <img src="/open_kakao.png" onclick="location.href='https://open.kakao.com/o/ss4MtIph'">
+        </div>
+    </div>
+</body>
+<script>
+    for(let i=0;i<3;i++){
+        document.querySelectorAll(".rank-6-10")[i].addEventListener("click",(e)=>{
+            let el = document.querySelectorAll(".main .product-list .list")[i]
+            const offsetX = el.offsetWidth;
+            el.scrollBy(offsetX,0)
+        });
+        document.querySelectorAll(".rank-1-5")[i].addEventListener("click",(e)=>{
+            let el = document.querySelectorAll(".main .product-list .list")[i]
+            const offsetX = el.offsetWidth;
+            el.scrollBy(-offsetX,0)
+        });
+    }
+</script>
+</html>

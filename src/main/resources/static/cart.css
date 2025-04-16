@@ -1,0 +1,112 @@
+.main{
+
+}
+.main table{
+    margin: 0 auto;
+    width: 1000px;
+}
+.main table tbody{
+
+}
+.main table tbody picture img{
+    height: 100px;
+    width: 85px;
+}
+.main table tbody .color{
+    display: flex;
+    gap: 5px;
+}
+.main table tbody .color div{
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.main table tbody .color div span{
+    font-size: 9px;
+}
+.main table tbody .price{
+    display: flex;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+.main table tbody .price em.discount{
+    color: red;
+    margin-right:5px;
+}
+.main table tbody select{
+    width: 100px;
+    height: 23px;
+}
+.main .size-cnt{
+    display: flex;
+    flex-flow: column;
+    gap:4px;
+}
+.main .size-cnt-one{
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    justify-content: center;
+}
+.main .size-cnt-one .cnt{
+    display: flex;
+    color: black;
+    margin-right: 15px;
+}
+.main .size-cnt-one .num{
+    font-size: 13px;
+    font-weight: 500;
+    border-top: 1px solid #767676;
+    border-bottom: 1px solid #767676;
+    width: 40px;
+    text-align: center;
+}
+.main .size-cnt-one .minus-btn
+,.main .size-cnt-one .plus-btn{
+    cursor:pointer;
+    background: none;
+    border: 1px solid #767676;
+    position:relative;
+    display: inline-block;
+    width:19px;
+    height:19px;
+}
+.main .size-cnt-one .minus-btn label
+,.main .size-cnt-one .plus-btn label{
+    display: inline-block;
+    width: 12px;
+    height: 1px;
+    background-color: black;
+    position: absolute;
+    top: 9px;
+    left: 4px;
+    cursor:pointer;
+}
+.main .size-cnt-one .plus-btn label:nth-child(2){
+    transform: rotate(90deg);
+}
+.main .size-cnt-one div{
+    height: 13px;
+    width: 13px;
+    border-radius: 50%;
+    margin-right: 2px;
+}
+.main .size-cnt-one .size{
+    display: inline-block;
+    width: 24px;
+    margin-right: 10px;
+}
+.main .size-cnt-one .money{
+    width: 85px;
+}
+.main .total-money{
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+.main .color{
+    cursor: pointer;
+}

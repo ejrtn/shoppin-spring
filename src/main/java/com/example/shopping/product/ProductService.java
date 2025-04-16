@@ -2,10 +2,11 @@ package com.example.shopping.product;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ProductService {
@@ -13,7 +14,14 @@ public class ProductService {
     @Autowired
     ProductMapper productMapper;
 
-    public boolean productSave(ProductDto productDto){
+    public int productSave(ProductDto productDto, MultipartFile img){
+        String path = System.getProperty("user.dir")+"\\..\\img\\"+img.getOriginalFilename();
+        productDto.setImg(img.getOriginalFilename());
+        try {
+            img.transferTo(new File(path));
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+        }
         return productMapper.productSave(productDto);
     }
 
@@ -21,15 +29,19 @@ public class ProductService {
         return productMapper.productList(saleYn);
     }
 
-    public boolean productUpdate(ProductDto productDto){
+    public int productUpdate(ProductDto productDto){
         return productMapper.productUpdate(productDto);
     }
 
-    public int productMinus(String productId, int cnt){
-        return productMapper.productMinus(productId, cnt);
+    public List<ProductDto> top10(){
+        return productMapper.top10();
+    };
+
+    public List<ProductDto> listAll(String category, String smallCategory, int startNum){
+        return productMapper.listAll(category,smallCategory,startNum);
     }
 
-    public int productPlus(String productId, int cnt){
-        return productMapper.productPlus(productId, cnt);
+    public ProductDto getProduct(String productId) {
+        return productMapper.getProduct(productId);
     }
 }

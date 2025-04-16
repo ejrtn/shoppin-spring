@@ -3,9 +3,12 @@ package com.example.shopping.delivery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class DeliveryService {
@@ -13,7 +16,7 @@ public class DeliveryService {
     @Autowired
     DeliveryMapper deliveryMapper;
 
-    public boolean deliverySave(DeliveryDto deliveryDto){
+    public int deliverySave(DeliveryDto deliveryDto){
         return deliveryMapper.deliverySave(deliveryDto);
     }
 
@@ -21,7 +24,7 @@ public class DeliveryService {
         return deliveryMapper.deliveryList(deliveryDto);
     }
 
-    public boolean deliveryUpdate(DeliveryDto deliveryDto){
+    public int deliveryUpdate(DeliveryDto deliveryDto){
         return deliveryMapper.deliveryUpdate(deliveryDto);
     }
 
@@ -29,8 +32,47 @@ public class DeliveryService {
         return deliveryMapper.delivery(deliveryId);
     }
 
-    public String deliveryNowLocation(){
-        return "deliveryNowLocation";
+    // 스마트택배 API
+    // https://tracking.sweettracker.co.kr:8443/templates/app.html#/
+    public String courierCompanyList() {
+
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("https://info.sweettracker.co.kr/api/v1/companylist?t_key=pwdhGbqe5vbLNd9WE9TuyA"))
+                    .build();
+
+            // Send the request and get the response
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Print the response code and content
+            System.out.println("Response Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+            return response.body();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return e.getMessage();
+        }
+    }
+
+    public String searchWaybill(String date,String trackNumber,String courierCode){
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("https://info.sweettracker.co.kr/api/v1/trackingInfo?t_key=pwdhGbqe5vbLNd9WE9TuyA&t_invoice="+trackNumber+"&t_code="+courierCode))
+                    .build();
+
+            // Send the request and get the response
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Print the response code and content
+            System.out.println("Response Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+            return response.body();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return e.getMessage();
+        }
     }
 
 }

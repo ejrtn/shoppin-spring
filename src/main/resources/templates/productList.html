@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/productList.css" rel="stylesheet" />
+</head>
+<body>
+    <header th:replace="/header :: header"></header>
+    <div class="main">
+        <h1 th:text="${category}"></h1>
+        <div class="list"></div>
+        <p class="add">
+            더보기
+            <input type="hidden" value="0" class="startNum">
+        </p>
+    </div>
+</body>
+<script>
+    addData();
+    document.querySelector(".main .add").addEventListener("click",()=>{
+        addData()
+    })
+
+    function addData(){
+        let data = {
+            category : document.querySelector(".main h1").textContent.split("-")[0]
+            , startNum : parseInt(document.querySelector(".startNum").value)
+        }
+        if(document.querySelector(".main h1").textContent.split("-").length>1){
+            data.smallCategory = document.querySelector(".main h1").textContent.split("-")[1]
+        }
+        $.ajax({
+            url : '/listAll',
+            type : 'POST',
+            data : data,
+            success : function(data){
+                t = ""
+                for(let i=0;i<10;i++){
+                    if(i%5==0){t = '<div class="line">';}
+
+                    t += '<div class="product">'
+                    t +=    '<picture>'
+                    t +=        '<source srcset="/imgLoad?img='+data[i].img+'" type="image/webp" />'
+                    t +=        '<a href="/sell?productId='+data[i].productId+'">'
+                    t +=            '<img src="/imgLoad?img='+data[i].img+'" />'
+                    t +=        '</a>'
+                    t +=    '</picture>'
+                    t +=    '<div>'
+                    t +=        '<a href="/sell?productId='+data[i].productId+'">'
+                    t +=            '<span>'+data[i].productName+'</span><span>'
+                    t +=            '<em class="discount">'+(data[i].discount==0 ? '' : data[i].discount+'%')+'</em>'
+                    t +=            '<em>'+data[i].price+'원</em></span>'
+                    t +=        '</a>'
+                    t +=    '</div>'
+                    t += '</div>'
+
+                    if((i != 1 && i % 5 == 4) || i == data.length-1) {
+                        t += '</div>'
+                        document.querySelector('.list').innerHTML += t
+
+                    }
+                }
+                if(data.length > 10) {
+                    document.querySelector(".startNum").value = parseInt(document.querySelector(".startNum").value) + 10
+                }else{
+                    document.querySelector(".add").classList.add("hidden")
+                }
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    }
+</script>
+</html>

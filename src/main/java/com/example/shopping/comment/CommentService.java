@@ -16,11 +16,11 @@ public class CommentService {
     @Autowired
     ReplayMapper replayMapper;
 
-    public boolean commentSave(CommentDto commentDto){
+    public int commentSave(CommentDto commentDto){
         return commentMapper.commentSave(commentDto);
     }
 
-    public boolean commentUpdate(CommentDto commentDto){
+    public int commentUpdate(CommentDto commentDto){
         return commentMapper.commentUpdate(commentDto);
     }
 
@@ -28,11 +28,11 @@ public class CommentService {
         return commentMapper.commentList(commentDto);
     }
 
-    public boolean replaySave(ReplayDto replayDto){
+    public int replaySave(ReplayDto replayDto){
         return replayMapper.replaySave(replayDto);
     }
 
-    public boolean replayUpdate(ReplayDto replayDto){
+    public int replayUpdate(ReplayDto replayDto){
         return replayMapper.replayUpdate(replayDto);
     }
 

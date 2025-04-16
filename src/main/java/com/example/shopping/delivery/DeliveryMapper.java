@@ -8,11 +8,11 @@ import java.util.Map;
 @Mapper
 public interface DeliveryMapper {
 
-    boolean deliverySave( DeliveryDto deliveryDto);
+    int deliverySave( DeliveryDto deliveryDto);
 
     List<DeliveryDto> deliveryList(DeliveryDto deliveryDto);
 
-    boolean deliveryUpdate(DeliveryDto deliveryDto);
+    int deliveryUpdate(DeliveryDto deliveryDto);
 
     DeliveryDto delivery(String deliveryId);
 }

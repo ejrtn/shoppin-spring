@@ -8,11 +8,11 @@ import java.util.Map;
 @Mapper
 public interface ReplayMapper {
 
-    boolean replaySave(ReplayDto replayDto);
+    int replaySave(ReplayDto replayDto);
 
-    boolean replayUpdate( ReplayDto replayDto);
+    int replayUpdate( ReplayDto replayDto);
 
     List<ReplayDto> replayList(ReplayDto replayDto);
 
-    boolean replayDelete(String commentId, String replayId);
+    int replayDelete(String commentId, String replayId);
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.shopping.cart.CartMapper">
+    <insert id="cartSave">
+        INSERT INTO cart
+        (
+            productId
+            , userId
+            , cnt
+        )
+        VALUES(
+            #{productId}
+            , #{userId}
+            , #{cnt}
+        )
+    </insert>
+
+    <select id="cartList" resultType="Map">
+		SELECT
+            c.productId
+            , c.userId
+            , c.cnt
+            , p.img
+            , p.price
+            , p.discount
+            , p.productName
+        FROM shopping.cart c
+        INNER JOIN shopping.products p
+        ON c.productId = p.productId
+        WHERE c.userId = #{userId}
+    </select>
+
+    <delete id="cartDelete">
+        DELETE FROM cart
+        WHERE userId=#{userId} AND productId=#{productId}
+    </delete>
+</mapper>

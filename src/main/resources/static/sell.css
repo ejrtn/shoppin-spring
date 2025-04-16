@@ -1,0 +1,169 @@
+.main{
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+}
+.main img{
+    width: 450px;
+    height: 540px;
+}
+.main .product-info{
+    display: flex;
+    flex-flow: column;
+    width: 300px;
+    font-weight: 600;
+    font-size: 18px;
+}
+.main .product-info .category{
+    font-size: 13px;
+    font-weight: normal;
+}
+.main .product-info .product-name{
+    word-break: break-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    margin-bottom: 10px;
+}
+.main .product-info .price{
+    display: flex;
+    margin-bottom: 10px;
+}
+.main .product-info .price em.discount{
+    color: red;
+    margin-right:5px;
+}
+
+.main .product-info .color{
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-size:10px;
+    font-weight: normal;
+}
+.main .product-info .color div{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor:pointer;
+    border:1px solid black;
+}
+.main .product-info .color span{
+    cursor:pointer;
+}
+.main .product-info select{
+    padding: 5px 15px;
+    margin-bottom: 10px;
+}
+.main .product-info select option:not("default"){
+    display: flex;
+}
+.main .product-info select option label{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor:pointer;
+}
+.main .product-info .size-cnt{
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.main .product-info .size-cnt .size-cnt-one{
+    margin-bottom: 5px;
+    border: 1px solid #767676;
+    padding: 10px 20px;
+}
+.main .product-info .size-cnt p{
+    margin-bottom:15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.main .product-info .size-cnt .size-cnt-one p .size{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.main .product-info .size-cnt .size-cnt-one p .size label{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.main .product-info .size-cnt .cnt-price{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.main .product-info .size-cnt .cnt-price .cnt{
+    display: flex;
+    gap: 0px;
+    margin: 0px;
+    color: black;
+    font-size: 16px;
+}
+.main .product-info .size-cnt .cnt-price .num{
+    font-size:18px;
+    font-weight: 500;
+    border-top: 1px solid #767676;
+    border-bottom: 1px solid #767676;
+    padding: 0px 14px;
+}
+.main .product-info .size-cnt .size{
+}
+.main .product-info .size-cnt .cancel-btn{
+    cursor:pointer;
+    font-size: 15px;
+}
+.main .product-info .size-cnt .minus-btn
+,.main .product-info .size-cnt .plus-btn{
+    cursor:pointer;
+    background: none;
+    border: 1px solid #767676;
+    position:relative;
+    display: inline-block;
+    width:26px;
+    height:26px;
+}
+.main .product-info .size-cnt .minus-btn label
+,.main .product-info .size-cnt .plus-btn label{
+    display: inline-block;
+    width: 12px;
+    height: 1px;
+    background-color: black;
+    position: absolute;
+    top: 12px;
+    left: 7px;
+    cursor:pointer;
+}
+.main .product-info .size-cnt .plus-btn label:nth-child(2){
+    transform: rotate(90deg);
+}
+.main .product-info .size-cnt .money{
+    font-size: 16px;
+}
+.main .product-info .total-money{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size:16px;
+    margin-bottom: 10px;
+}
+.main .product-info .total-money .total-cnt{}
+.main .product-info .total-money .money{}
+.main .product-info button{
+    background-color: #e8e8e8;
+    border: 1px solid #767676;
+    outline: none;
+    cursor: pointer;
+    padding: 9px 0px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}

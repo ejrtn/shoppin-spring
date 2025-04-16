@@ -1,0 +1,62 @@
+html,body{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-style:normal;
+}
+html{
+    padding-bottom: 10px;
+}
+em{
+    font-style:normal;
+}
+p{
+    margin: 0px;
+}
+header{
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0px 20px;
+    margin-bottom:20px;
+}
+header .big-menu{
+    display: flex;
+    flex: 1;
+    gap:20px;
+}
+h3{
+    margin: 0px;
+    padding: 0px;
+}
+header h3{
+    margin: 0px;
+    padding: 0px 11px;
+    cursor: pointer;
+    position : relative;
+    display : inline-block;
+}
+header .small-menu-area{
+    position : relative;
+}
+header .small-menu-area .small-menu{
+  display : none;
+  position : absolute;
+  width: 100%;
+  text-align: center;
+  background-color: #ffffff;
+  z-index : 1; /*다른 요소들보다 앞에 배치*/
+}
+header .small-menu-area .small-menu label{
+    display : block;
+    cursor:pointer;
+    padding: 3px;
+    font-size:13px;
+}
+header .small-menu-area:hover .small-menu {
+  display: block;
+}
+header .logo h1{
+    margin: 0px 10px 0px 0px;
+    cursor:pointer;
+}

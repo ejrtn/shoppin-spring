@@ -11,11 +11,11 @@ public class UserService{
     @Autowired
     UserMapper userMapper;
 
-    public boolean userSave(UserDto userDto){
+    public int userSave(UserDto userDto){
         return userMapper.userSave(userDto);
     }
 
-    public boolean userDelete(String userId){
+    public int userDelete(String userId){
         return userMapper.userDelete(userId);
     }
 
@@ -23,7 +23,7 @@ public class UserService{
         return userMapper.login(userId,password);
     }
 
-    public boolean passwordUpdate(String userId, String password, String newPassword){
+    public int passwordUpdate(String userId, String password, String newPassword){
         return userMapper.passwordUpdate(userId,password,newPassword);
     }
 
@@ -34,4 +34,5 @@ public class UserService{
     public int findPassword(String name, String email, String userId){
         return userMapper.findPassword(name,email,userId);
     }
+
 }

@@ -8,11 +8,11 @@ import java.util.Map;
 @Mapper
 public interface CommentMapper {
 
-    boolean commentSave(CommentDto commentDto);
+    int commentSave(CommentDto commentDto);
 
-    boolean commentUpdate(CommentDto commentDto);
+    int commentUpdate(CommentDto commentDto);
 
     List<CommentDto> commentList(CommentDto commentDto);
 
-    boolean commentDelete(String commentId);
+    int commentDelete(String commentId);
 }

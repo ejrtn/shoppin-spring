@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="header">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/header.css" rel="stylesheet" />
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1 onclick="location.href='/'">DEOKSU</h1>
+        </div>
+        <div class="big-menu">
+            <div class="small-menu-area">
+                <h3 onclick="location.href='/listAll/상의'">상의</h3>
+                <div class="small-menu">
+                    <label onclick="location.href='/listAll/상의-반팔'">반팔</label>
+                    <label onclick="location.href='/listAll/상의-패딩'">패딩</label>
+                    <label onclick="location.href='/listAll/상의-셔츠'">셔츠</label>
+                    <label onclick="location.href='/listAll/상의-기타'">기타</label>
+                </div>
+            </div>
+            <div class="small-menu-area">
+                <h3 onclick="location.href='/listAll/하의'">하의</h3>
+                <div class="small-menu">
+                    <label onclick="location.href='/listAll/하의-반바지'">반바지</label>
+                    <label onclick="location.href='/listAll/하의-청바지'">청바지</label>
+                    <label onclick="location.href='/listAll/하의-기타'">기타</label>
+                </div>
+            </div>
+            <div class="small-menu-area">
+                <h3 onclick="location.href='/listAll/신발'">신발</h3>
+                <div class="small-menu">
+                    <label onclick="location.href='/listAll/신발/운동화'">운동화</label>
+                    <label onclick="location.href='/listAll/신발/슬리퍼'">슬리퍼</label>
+                    <label onclick="location.href='/listAll/신발/스니커즈'">스니커즈</label>
+                    <label onclick="location.href='/listAll/신발/기타'">기타</label>
+                </div>
+            </div>
+
+        </div>
+        <input type="hidden" th:value="${session.user_id}" id="userId">
+        <h3 class="my" th:if="${session.user_id}" onclick="location.href='#'">내정보</h3>
+        <h3 class="my" th:if="${session.user_id}" onclick="location.href='#'">장바구니</h3>
+        <h3 class="my" th:if="${session.user_id}" onclick="location.href='#'">주문목록</h3>
+        <h3 class="my" th:if="${session.user_id==null}" onclick="location.href='#'" >로그인</h3>
+    </header>
+</body>
+</html>

@@ -8,13 +8,13 @@ import java.util.Map;
 @Mapper
 public interface UserMapper {
 
-    boolean userSave(UserDto userDto);
+    int userSave(UserDto userDto);
 
-    boolean userDelete(String userId);
+    int userDelete(String userId);
 
     Map<String,String> login(String userId, String password);
 
-    boolean passwordUpdate(String userId, String password, String newPassword);
+    int passwordUpdate(String userId, String password, String newPassword);
 
     int findId(String name, String email);
 

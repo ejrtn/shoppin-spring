@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns:if="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/sell.css" rel="stylesheet" />
+</head>
+<body>
+    <header th:replace="/header :: header"></header>
+    <div class="main">
+        <input type="hidden" id="productId" th:value="${productId}">
+        <picture>
+            <source type="image/webp" srcset=""/>
+            <img/>
+        </picture>
+        <div class="product-info">
+            <span class="category"></span>
+            <span class="product-name"></span>
+            <span class="price">
+                <em class="discount"></em>
+                <em></em>
+            </span>
+            <div class="color"></div>
+            <select>
+                <option selected hidden class="default">사이즈</option>
+            </select>
+            <div class="size-cnt"></div>
+            <p class="total-money">
+                <span class="total-cnt">총 0개</span>
+                <span class="money">0원</span>
+            </p>
+            <button class="cartSave">장바구니</button>
+            <button class="fastSell">바로구매</button>
+        </div>
+    </div>
+</body>
+<script>
+    $.ajax({
+        url : '/getProduct',
+        type : 'POST',
+        data : {"productId":document.querySelector("#productId").value},
+        success : function(data){
+            document.querySelector("picture source").srcset = "/imgLoad?img="+data.img
+            document.querySelector("picture img").src = "/imgLoad?img="+data.img
+            document.querySelector(".category").textContent = data.category
+            document.querySelector(".product-name").textContent = data.productName
+            document.querySelector(".discount").textContent = data.discount==0 ? '' : data.discount+"%"
+            document.querySelectorAll("em")[1].textContent = data.price
+            data.cnt = JSON.parse(data.cnt)
+            
+            let keys = Object.keys(data.cnt)
+            let c_total = {}
+            for(let color in data.cnt) {
+                let t = '<div class="color-'+color+'" style="background-color:#'+color+';' +
+                            'border-color:#'+(parseInt(color)>7631988?"000000":'ffffff')+';' +
+                            'color:#'+(parseInt(color)<7631988?"ffffff":'000000')+';">'
+
+                for(let size in data.cnt[color]){
+                    t += '<input type="hidden" class="c-'+color+"-"+size+'" value="'+data.cnt[color][size]+'">'
+                    if(Object.keys(c_total).includes(color)){
+                        c_total[color] += parseInt(data.cnt[color][size])
+                    }else{
+                        c_total[color] = parseInt(data.cnt[color][size])
+                    }
+                }
+                t += '</div>'
+
+
+                document.querySelector(".color").innerHTML += t
+            }
+
+            t = ''
+            let color = Object.keys(data.cnt)[0];
+            for(let i=0;i<Object.keys(data.cnt[color]).length;i++){
+                t += '<option value="'+color+'-'+Object.keys(data.cnt[color])[i]+'" '+
+                            'style="background-color:#'+color+';' +
+                            'color:#'+(parseInt(color)<7631988?"ffffff":'000000')+';">'
+                t += Object.keys(data.cnt[color])[i]
+                t += '</option>'
+            }
+            document.querySelector("select").innerHTML += t
+        },
+        error : function(error){
+            console.log(error)
+        }
+    });
+
+    document.querySelector(".color").addEventListener("click",(e)=>{
+        if(e.target.tagName == 'DIV'){
+            let v = e.target.querySelectorAll("input");
+            for(let i=0;i<v.length;i++){
+                let vv = v[i].className.split("-")
+                document.querySelectorAll("option")[i+1].value = vv[1]+"-"+vv[2]
+                document.querySelectorAll("option")[i+1].style.backgroundColor = '#'+vv[1]
+                document.querySelectorAll("option")[i+1].style.color = '#'+(parseInt(vv[1])<7631988?"ffffff":'000000')
+            }
+        }
+    })
+
+    document.querySelector(".main select").addEventListener("input",(e)=>{
+        
+        let el = document.querySelectorAll(".size-cnt-one");
+        let ch = -1;
+        for(let i=0;i<el.length;i++){
+            if(e.currentTarget.value == el[i].querySelector("p label").className){
+                ch = i
+            }
+        }
+        
+        if(ch == -1){
+            let t = ""
+            let color = e.currentTarget.value.split("-")[0]
+            t += '<div class="size-cnt-one">'
+            t +=     '<p>'
+            t +=         '<span class="size">'
+            t +=         '<label class="'+e.currentTarget.value+'" style="background-color:#'+color+';' +
+                            'border-color:#'+(parseInt(color)>7631988?"000000":'ffffff')+';' +
+                            'color:#'+(parseInt(color)<7631988?"ffffff":'000000')+';"></label>'
+            t +=         e.target.value.split("-")[1]+'</span>'
+            t +=         '<span class="cancel-btn">X</span>'
+            t +=     '</p>'
+            t +=     '<div class="cnt-price">'
+            t +=         '<label class="cnt">'
+            t +=             '<span class="minus-btn">'
+            t +=                 '<label></label>'
+            t +=             '</span>'
+            t +=             '<span class="num">1</span>'
+            t +=             '<span class="plus-btn">'
+            t +=                 '<label></label>'
+            t +=                 '<label></label>'
+            t +=             '</span>'
+            t +=         '</label>'
+            t +=         '<label class="money">'+money(1)+'원</label>'
+            t +=     '</div>'
+            t += '</div>'
+
+            document.querySelector(".main .size-cnt").innerHTML += t
+            document.querySelector(".total-money .money").textContent = money(total_money())+"원"
+        }
+        
+    })
+    document.querySelector(".size-cnt").addEventListener("click",(e)=>{
+        if(e.target.className=='plus-btn'){
+            let num = parseInt(e.target.previousElementSibling.textContent)
+            num += 1
+            e.target.previousElementSibling.textContent = num
+            e.target.parentNode.nextElementSibling.textContent = money(num)+"원"
+            document.querySelector(".total-money .money").textContent = money(total_money())+"원"
+        }else if(e.target.tagName=='LABEL' && e.target.parentNode.className == 'plus-btn'){
+            let num = parseInt(e.target.parentNode.previousElementSibling.textContent)
+            num += 1
+            e.target.parentNode.previousElementSibling.textContent = num
+            e.target.parentNode.parentNode.nextElementSibling.textContent = money(num)+"원"
+            document.querySelector(".total-money .money").textContent = money(total_money())+"원"
+        }else if(e.target.className=='minus-btn'){
+            let num = (e.target.nextElementSibling.textContent);
+            num -= 1
+            e.target.nextElementSibling.textContent = num
+            if(num<1){
+                e.target.parentNode.parentNode.parentNode.remove()
+            }else{
+                e.target.parentNode.nextElementSibling.textContent = money(num)+"원"
+            }
+            document.querySelector(".total-money .money").textContent = money(total_money())+"원"
+        }else if(e.target.tagName=='LABEL' && e.target.parentNode.className == 'minus-btn'){
+            let num = (e.target.parentNode.nextElementSibling.textContent);
+            num -= 1
+            e.target.parentNode.nextElementSibling.textContent = num
+            if(num<1){
+                e.target.parentNode.parentNode.parentNode.parentNode.remove()
+            }else{
+                e.target.parentNode.parentNode.nextElementSibling.textContent = money(num)+"원"
+            }
+            document.querySelector(".total-money .money").textContent = money(total_money())+"원"
+        }else if(e.target.className == 'cancel-btn'){
+            e.target.parentNode.parentNode.remove()
+        }
+    })
+
+
+    document.querySelector(".cartSave").addEventListener("click",()=>{
+        let cnt={};
+        let el = document.querySelectorAll(".color div")
+        let el2 = document.querySelectorAll("option")
+        for(let c=0;c<el.length;c++){
+            cnt[el[c].className.split("-")[1]] = {}
+            for(let o=1;o<el2.length;o++){
+                cnt[el[c].className.split("-")[1]][el2[o].textContent.split(" - ")[0]] = 0        
+            }
+        }
+        console.log(cnt)
+        el = document.querySelectorAll(".size-cnt-one")
+        for(let i=0;i<el.length;i++){
+            let size = el[i].querySelector(".size label").className.split("-")
+            cnt[size[0]][size[1]] = parseInt(el[i].querySelector(".num").textContent)
+        }
+        $.ajax({
+            url : '/cartSave',
+            type : 'POST',
+            data : {
+                productId:document.querySelector("#productId").value,
+                userId:document.querySelector("#userId").value==''?'deoksu':document.querySelector("#userId").value,
+                cnt:JSON.stringify(cnt)
+            },
+            success : function(data){
+                if(data == 1){
+                    location.href = '/cart'
+                }
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    })
+    
+    function money(num){
+        let discount = document.querySelectorAll(".price em")[0].textContent
+        let money = parseInt(document.querySelectorAll(".price em")[1].textContent);
+        if(document.querySelectorAll(".price em")[0].textContent != ''){
+            money = parseInt(money * ((100-parseInt(discount))*0.01))
+        }
+        return money*num
+    }
+    
+    function total_money(){
+        let el = document.querySelectorAll(".size-cnt-one .num")
+        let cnt = 0
+        for(let i=0;i<el.length;i++){
+            cnt += parseInt(el[i].textContent)
+        }
+        document.querySelector(".total-money .total-cnt").textContent = "총 "+cnt+"개"
+        return cnt
+    }
+</script>
+</html>

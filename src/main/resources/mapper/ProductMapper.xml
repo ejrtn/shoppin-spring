@@ -6,50 +6,111 @@
 
     <insert id="productSave">
         INSERT INTO products
-        (productName, price, cnt, category, explanation, productId)
+        (
+            , productName
+            , price
+            , category
+            , explanation
+            , productId
+            , img
+            , discount
+            , smallCategory
+            , cnt
+        )
         VALUES(
-            #{productName}
+            , #{productName}
             , #{price}
-            , #{cnt}
             , #{category}
             , #{explanation}
             , #{productId}
+            , #{img}
+            , #{discount}
+            , #{smallCategory}
+            , #{cnt}
         );
     </insert>
 
     <select id="productList" resultType="Map">
         SELECT
-            productName
+            , productName
             , price
-            , cnt
             , category
             , explanation
             , productId
-            , saleYn
+            , img
+            , discount
+            , smallCategory
+            , cnt
         FROM products
     </select>
 
     <update id="productUpdate">
         UPDATE products
         SET
-            productName=#{productName}
-            , price=#{price}
-            , category=#{category}
-            , explanation=#{explanation}
-            , saleYn=#{saleYn}
+            , productName = #{productName}
+            , price = #{price}
+            , category = #{category}
+            , explanation = #{explanation}
+            , img = #{img}
+            , discount = #{discount}
+            , numberOfSalse = #{numberOfSalse}
+            , smallCategory = #{smallCategory}
+            , cnt = #{cnt}
         WHERE productId=#{productId}
     </update>
 
-    <update id="productMinus">
-        UPDATE products
-        SET cnt=cnt-#{cnt}
-        WHERE productId=#{productId}
-    </update>
+    <select id="top10" resultType="Map">
+        SELECT
+            category
+            , productName
+            , productId
+            , price
+            , img
+            , ranking
+            , discount
+        FROM (
+            SELECT
+                category
+                , productName
+                , productId
+                , price
+                , img
+                , discount
+                , RANK() OVER(PARTITION BY category ORDER BY numberOfSalse DESC, productId DESC) ranking
+            FROM products
+        ) a
+        WHERE a.ranking &lt;= 10;
+    </select>
 
-    <update id="productPlus">
-        UPDATE products
-        SET cnt=cnt+#{cnt}
-        WHERE productId=#{productId}
-    </update>
+    <select id="listAll" resultType="Map">
+        SELECT
+            productName
+            , productId
+            , price
+            , img
+            , discount
+        FROM products
+        <choose>
+            <when test = "smallCategory == null">
+                WHERE category=#{category}
+            </when>
+            <otherwise>
+                WHERE category=#{category} and smallCategory=#{smallCategory}
+            </otherwise>
+        </choose>
+        LIMIT #{startNum},11
+    </select>
 
+    <select id="getProduct">
+        SELECT
+            productName
+            , concat(category,'-',smallCategory) AS category
+            , productId
+            , price
+            , img
+            , discount
+            , cnt
+        FROM products
+        WHERE productId = #{productId}
+    </select>
 </mapper>
