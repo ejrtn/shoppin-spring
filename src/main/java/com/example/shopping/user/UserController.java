@@ -1,10 +1,11 @@
 package com.example.shopping.user;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class UserController {
@@ -13,6 +14,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("userSave")
+    @ResponseBody
     public int userSave(UserDto userDto){
         return userService.userSave(userDto);
     }
@@ -22,9 +24,25 @@ public class UserController {
         return userService.userDelete(userId);
     }
 
+    @GetMapping("login")
+    public String login(){
+        return "login";
+    }
+
     @PostMapping("login")
-    public Map<String,String> login(String userId, String password){
-        return userService.login(userId,password);
+    @ResponseBody
+    public int login(HttpSession httpSession, String userId, String password){
+
+        int r = userService.login(userId,password);
+        if(r == 1) httpSession.setAttribute("userId",userId);
+        return r;
+    }
+
+    @PostMapping("logout")
+    @ResponseBody
+    public int logout(HttpSession httpSession){
+        httpSession.removeAttribute("userId");
+        return 1;
     }
 
     @PostMapping("passwordUpdate")
@@ -33,12 +51,31 @@ public class UserController {
     }
 
     @PostMapping("findId")
-    public int findId(String name, String email){
+    @ResponseBody
+    public String findId(String name, String email){
         return userService.findId(name,email);
     }
 
     @PostMapping("findPassword")
+    @ResponseBody
     public int findPassword(String name, String email, String userId){
+
         return userService.findPassword(name,email,userId);
+    }
+
+    @GetMapping("join")
+    public String join(){
+        return "join";
+    }
+
+    @PostMapping("idDoubleCheck")
+    @ResponseBody
+    public int idDoubleCheck(String userId){
+        return userService.idDoubleCheck(userId);
+    }
+
+    @GetMapping("idpw")
+    public String findIdPw(){
+        return "findIdPw";
     }
 }

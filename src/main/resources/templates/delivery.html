@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link href="/cart.css" rel="stylesheet" />
+    <link href="/delivery.css" rel="stylesheet" />
 </head>
 <body>
     <header th:replace="/header :: header"></header>
@@ -12,7 +12,6 @@
         <table>
             <thead>
                 <tr>
-                    <th><input type="checkbox" class="clothes" name="clothes" value="all" checked></th>
                     <th>이미지</th>
                     <th>정보</th>
                     <th>옵션</th>
@@ -42,48 +41,18 @@
                 let c_total = {}
                 let t = ""
                 t += '<tr>'
-                t +=    '<td><input type="checkbox" class="clothes" name="clothes" value="'+data[i].productId+'" checked></td>'
                 t +=    '<td>'
                 t +=        '<picture>'
                 t +=            '<source srcset="/imgLoad?img='+data[i].img+'" type="image/webp" />'
-                t +=            '<a href="/sell?productId='+data[i].productId+'">'
-                t +=                '<img src="/imgLoad?img='+data[i].img+'" />'
-                t +=            '</a>'
+                t +=            '<img src="/imgLoad?img='+data[i].img+'" />'
                 t +=        '</picture>'
                 t +=    '</td>'
                 t +=    '<td>'
-                t +=        '<a href="/sell?productId='+data[i].productId+'">'+data[i].productName+'</a>'
+                t +=        data[i].productName
                 t +=        '<span class="price"><em class="discount">'+(data[i].discount==0 ? '' : data[i].discount+'%')+'</em><em>'+data[i].price+'</em></span>'
-                t +=        '<div class="color">'
-                for(let color in data.cnt){
-                    t += '<div class="color-'+color+'" style="background-color:#'+color+';' +
-                            'border-color:#'+(parseInt(color)>7631988?"000000":'ffffff')+';' +
-                            'color:#'+(parseInt(color)<7631988?"ffffff":'000000')+';">'
-                    for(let size in data.cnt[color]){
-                        t += '<input type="hidden" class="c-'+color+"-"+size+'" value="'+data.cnt[color][size]+'">'
-                        if(Object.keys(c_total).includes(color)){
-                            c_total[color] += parseInt(data.cnt[color][size])
-                        }else{
-                            c_total[color] = parseInt(data.cnt[color][size])
-                        }
-                    }
-                    t += '</div>'
-                }
-                t +=        '</div>'
-                t +=        '<select>'
-                t +=        '<option selected hidden class="default">사이즈</option>'
-                let color = Object.keys(data.cnt)[0];
-                for(let i=0;i<Object.keys(data.cnt[color]).length;i++){
-                    t += '<option value="'+color+'-'+Object.keys(data.cnt[color])[i]+'" '+
-                                'style="background-color:#'+color+';' +
-                                'color:#'+(parseInt(color)<7631988?"ffffff":'000000')+';">'
-                    t += Object.keys(data.cnt[color])[i]
-                    t += '</option>'
-                }
-                t +=        '</select>'
+                
                 t +=    '</td>'
                 t +=    '<td>'
-                t +=    '<p class="x-btn">X</p>'
                 t +=        '<div class="size-cnt">'
                 for(let color in data.cnt){
                     for(let size in data.cnt[color]){
@@ -94,14 +63,7 @@
                                     'color:#'+(parseInt(color)<7631988?"ffffff":'000000')+';"></div>'
                         t +=     '<label class="size">'+size+'</label>'
                         t +=     '<label class="cnt">'
-                        t +=         '<span class="minus-btn">'
-                        t +=             '<label></label>'
-                        t +=         '</span>'
-                        t +=         '<span class="num">'+data.cnt[color][size]+'</span>'
-                        t +=         '<span class="plus-btn">'
-                        t +=             '<label></label>'
-                        t +=             '<label></label>'
-                        t +=         '</span>'
+                        t +=         '<span class="num">'+data.cnt[color][size]+'개</span>'
                         t +=      '</label>'
                         t +=      '<label class="money">'+(parseInt(data[i].price * ((100-parseInt(data[i].discount))*0.01))*parseInt(data.cnt[color][size]))+'원</label>'
                         t += '</div>'
@@ -269,9 +231,6 @@
         }
     })
 
-    document.querySelector(".buy-btn").addEventListener("click",()=>{
-        location.href="/delivery"
-    })
 
     function calculate(target){
         let currentTarget = target.parentNode.parentNode.parentNode.parentNode.parentNode

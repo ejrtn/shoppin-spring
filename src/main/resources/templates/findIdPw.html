@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Page Title</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+        html,body{
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+        .main{
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            height: 100%;
+            margin: 0 auto;
+            width: 360px;
+        }
+        h1{
+            font-size: 50px;
+            font-weight: 900;
+            text-align: center;
+        }
+        input{
+            font-size: 18px;
+            height: 45px;
+            margin-bottom: 10px;
+            outline: none;
+            background: none;
+            border: 1px solid black;
+            padding: 0px 20px;
+        }
+        button{
+            font-size: 22px;
+            height: 50px;
+            outline: none;
+            background: none;
+            border: 1px solid black;
+            padding: 0px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .category{
+            display: flex;
+            margin-bottom: 5px;
+        }
+        .category label:not(.line){
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+        }
+        .category label:nth-child(2){
+            width: 1px;
+            background-color: black;
+            height: 100%;
+        }
+        .findId,.findPw{
+            display: flex;
+            flex-flow: column;
+        }
+        .findId.display-none,.findPw.display-none{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h1>DEOKSU</h1>
+        <div class="category">
+            <label>아이디 찾기</label>
+            <label class="line"></label>
+            <label>패스워드 찾기</label>
+        </div>
+        <div class="content">
+            <div class="findId">
+                <input type="text" placeholder="이름" class="name">
+                <input type="text" placeholder="이메일" class="email">
+                <button>아이디 확인</button>
+                <button onclick="location.href='login'">취소</button>
+            </div>
+            <div class="findPw display-none">
+                <input type="text" placeholder="아이디" class="id">
+                <input type="text" placeholder="이름" class="name">
+                <input type="text" placeholder="이메일" class="email">
+                <button>비밀번호 발급</button>
+                <button onclick="location.href='login'">취소</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.querySelectorAll(".category label")[0].addEventListener("click",()=>{
+        document.querySelector(".findId").classList.remove("display-none")
+        document.querySelector(".findPw").classList.add("display-none")
+    })
+    document.querySelectorAll(".category label")[2].addEventListener("click",()=>{
+        document.querySelector(".findId").classList.add("display-none")
+        document.querySelector(".findPw").classList.remove("display-none")
+    })
+    document.querySelectorAll(".findId button")[0].addEventListener("click",()=>{
+        $.ajax({
+            url : '/findId',
+            type : 'POST',
+            data : {
+                "name":document.querySelector(".findId .name").value,
+                "email":document.querySelector(".findId .email").value
+            },
+            success : function(data){
+                if(data==''){
+                    alert("입력하신 정보가 맞지 않습니다.")
+                }else{
+                    alert(data)
+                }
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    })
+    document.querySelectorAll(".findPw button")[0].addEventListener("click",()=>{
+        $.ajax({
+            url : '/findPassword',
+            type : 'POST',
+            data : {
+                "name":document.querySelector(".findPw .name").value,
+                "email":document.querySelector(".findPw .email").value,
+                "userId":document.querySelector(".findPw .id").value
+            },
+            success : function(data){
+                if(data==1){
+                    alert("비밀번호 새로 발급 완료")
+                }else{
+                    alert("입력하신 정보가 맞지 않습니다.")
+                }
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    })
+</script>
+</html>

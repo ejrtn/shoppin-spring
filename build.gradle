@@ -37,8 +37,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'com.sun.mail:javax.mail:1.6.2'
-	implementation 'commons-io:commons-io:2.6'
+	implementation 'commons-io:commons-io:2.14.0'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {

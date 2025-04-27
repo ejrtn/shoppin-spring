@@ -40,11 +40,31 @@
             </div>
 
         </div>
-        <input type="hidden" th:value="${session.user_id}" id="userId">
-        <h3 class="my" th:if="${session.user_id}" onclick="location.href='#'">내정보</h3>
-        <h3 class="my" th:if="${session.user_id}" onclick="location.href='#'">장바구니</h3>
-        <h3 class="my" th:if="${session.user_id}" onclick="location.href='#'">주문목록</h3>
-        <h3 class="my" th:if="${session.user_id==null}" onclick="location.href='#'" >로그인</h3>
+        <input type="hidden" th:value="${session.userId}" id="userId">
+        <h3 class="my" th:if="${session.userId}" onclick="logout()">로그아웃</h3>
+        <h3 class="my" th:if="${session.userId}" onclick="location.href='#'">내정보</h3>
+        <h3 class="my" th:if="${session.userId}" onclick="location.href='/cart'">장바구니</h3>
+        <h3 class="my" th:if="${session.userId}" onclick="location.href='#'">주문목록</h3>
+        <h3 class="my" th:if="${session.userId==null}" onclick="location.href='/login'" hidden>로그인</h3>
     </header>
 </body>
+<script>
+    function logout(){
+        $.ajax({
+            url : '/logout',
+            type : 'POST',
+            success : function(data){
+                let el = document.querySelectorAll("h3")
+                for(let i=0;i<el.length;i++){
+                    el[i].remove()
+                }
+                document.querySelector("#userId").value = ''
+                document.querySelector("header").innerHTML += '<h3 class="my" th:if="${session.userId==null}" onclick="location.href=\'login\'" >로그인</h3>'
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    }
+</script>
 </html>

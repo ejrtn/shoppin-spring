@@ -26,17 +26,9 @@
         WHERE userId=#{userId}
     </update>
 
-    <select id="login" resultType="Map">
+    <select id="login" resultType="int">
         SELECT
-            name
-            , userId
-            , address
-            , phonNumber
-            , gender
-            , password
-            , yyyymmdd
-            , email
-            , deleteYn
+            count(*) AS cnt
         FROM user
         WHERE userId=#{userId} AND password=#{password}
     </select>
@@ -44,21 +36,36 @@
     <update id="passwordUpdate">
         UPDATE user
         SET password=#{newPassword}
-        WHERE userId=#{userId} AND password=#{password}
+        WHERE userId=#{userId} AND password=#{password} AND deleteYn = 'N'
     </update>
 
-    <select id="findId" resultType="int">
+    <update id="passwordUpdate2">
+        UPDATE user
+        SET password=#{newPassword}
+        WHERE userId=#{userId} AND deleteYn = 'N'
+    </update>
+
+    <select id="findId" resultType="String">
         SELECT
-            COUNT(*)
+            userId
         FROM user
         WHERE name=#{name} AND email=#{email}
     </select>
 
-    <select id="findPassword" resultType="int">
+    <select id="findPassword" resultType="String">
         SELECT
-            COUNT(*)
+            CASE
+                WHEN COUNT(*) >= 1 THEN HEX(RAND()*0xFFFFFFFF)
+                ELSE '0'
+            END result
         FROM user
         WHERE name=#{name} AND email=#{email} AND userId=#{userId}
     </select>
 
+    <select id="idDoubleCheck" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM user
+        WHERE userId=#{userId}
+    </select>
 </mapper>

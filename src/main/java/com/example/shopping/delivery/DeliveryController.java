@@ -2,12 +2,9 @@ package com.example.shopping.delivery;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
 
 @Controller
@@ -15,6 +12,11 @@ public class DeliveryController {
 
     @Autowired
     DeliveryService deliveryService;
+
+    @GetMapping("delivery")
+    public String delivery(){
+        return "delivery";
+    }
 
     @PostMapping("deliverySave")
     public int deliverySave(DeliveryDto deliveryDto){

@@ -12,11 +12,15 @@ public interface UserMapper {
 
     int userDelete(String userId);
 
-    Map<String,String> login(String userId, String password);
+    int login(String userId, String password);
 
     int passwordUpdate(String userId, String password, String newPassword);
 
-    int findId(String name, String email);
+    int passwordUpdate2(String userId, String newPassword);
 
-    int findPassword(String name, String email, String userId);
+    String findId(String name, String email);
+
+    String findPassword(String name, String email, String userId);
+
+    int idDoubleCheck(String userId);
 }

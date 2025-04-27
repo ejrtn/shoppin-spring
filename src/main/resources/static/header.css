@@ -13,6 +13,10 @@ em{
 p{
     margin: 0px;
 }
+a{
+    text-decoration-line: none;
+    color: black;
+}
 header{
     height: 60px;
     display: flex;

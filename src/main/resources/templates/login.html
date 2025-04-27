@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Page Login</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+        html,body{
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+        .main{
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        h1{
+            font-size: 50px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        input{
+            font-size: 18px;
+            width: 360px;
+            height: 45px;
+            margin-bottom: 10px;
+            outline: none;
+            background: none;
+            border: 1px solid black;
+            padding: 0px 20px;
+        }
+        button{
+            font-size: 22px;
+            width: 402px;
+            height: 50px;
+            outline: none;
+            background: none;
+            border: 1px solid black;
+            padding: 0px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        a{
+            color: black;
+            text-decoration-line: none;
+        }
+        span{
+            display: flex;
+            align-items: center;
+        }
+        em{
+            font-style: normal;
+            margin: 0px 15px;
+            margin-top: 2px;
+            background-color: black;
+            width: 1px;
+            height: 18px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h1 onclick="location.href='/'">DEOKSU</h1>
+        <input type="text" class="id" placeholder="아이디">
+        <form><input type="password" placeholder="패스워드" class="pw" autocomplete="no"></form>
+        <button>로그인</button>
+        <span>
+            <a href="idpw">아이디/비밀번호 찾기</a>
+            <em></em>
+            <a href="join">회원가입</a>
+        </span>
+    </div>    
+</body>
+<script>
+    document.querySelector("button").addEventListener("click",()=>{
+        $.ajax({
+            url : '/login',
+            type : 'POST',
+            data : {
+                "userId":document.querySelector(".id").value,
+                "password":document.querySelector(".pw").value
+            },
+            success : function(data){
+                if(data == 1){
+                    location.href = '/'
+                }else{
+                    alert("아이디, 패스워드가 잘못 되었습니다")
+                }
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    })
+</script>
+</html>

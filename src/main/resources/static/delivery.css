@@ -43,26 +43,14 @@
     font-size: 13px;
 }
 .main table thead th:nth-child(1){
-    width: 15px;
-}
-.main table thead th:nth-child(2){
     width: 90px;
 }
-.main table tbody td:nth-child(3){
+.main table tbody td:nth-child(2){
     align-content: baseline;
 }
-.main table tbody td:nth-child(4){
+.main table tbody td:nth-child(3){
     display: flex;
     flex-flow: column;
-}
-.main a{
-    font-size: 14px;
-    white-space: nowrap;
-    margin-bottom: 3px;
-}
-.main table thead td [type="checkbox"]{
-    width: 15px;
-    height: 15px;
 }
 .main .size-cnt{
     display: flex;
@@ -83,34 +71,8 @@
 .main .size-cnt-one .num{
     font-size: 13px;
     font-weight: 500;
-    border-top: 1px solid #767676;
-    border-bottom: 1px solid #767676;
     width: 40px;
     text-align: center;
-}
-.main .size-cnt-one .minus-btn
-,.main .size-cnt-one .plus-btn{
-    cursor:pointer;
-    background: none;
-    border: 1px solid #767676;
-    position:relative;
-    display: inline-block;
-    width:19px;
-    height:19px;
-}
-.main .size-cnt-one .minus-btn label
-,.main .size-cnt-one .plus-btn label{
-    display: inline-block;
-    width: 12px;
-    height: 1px;
-    background-color: black;
-    position: absolute;
-    top: 9px;
-    left: 4px;
-    cursor:pointer;
-}
-.main .size-cnt-one .plus-btn label:nth-child(2){
-    transform: rotate(90deg);
 }
 .main .size-cnt-one div{
     height: 13px;
