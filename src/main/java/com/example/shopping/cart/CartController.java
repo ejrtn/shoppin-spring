@@ -2,9 +2,7 @@ package com.example.shopping.cart;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,6 +31,29 @@ public class CartController {
 
     @GetMapping("cart")
     public String cart(){
-        return "/cart";
+        return "cart";
+    }
+
+    @GetMapping("buy")
+    public String buy(){
+        return "buy";
+    }
+
+    @PostMapping("tmpCartSave")
+    @ResponseBody
+    public int tmpCartSave(@RequestBody List<CartDto> cartList){
+        return cartService.tmpCartSave(cartList);
+    }
+
+    @PostMapping("tmpCartDelete")
+    @ResponseBody
+    public int tmpCartDelete(String userId){
+        return cartService.tmpCartDelete(userId);
+    }
+
+    @PostMapping("tmpCartList")
+    @ResponseBody
+    public List<CartDto> tmpCartList(String userId){
+        return cartService.tmpCartList(userId);
     }
 }

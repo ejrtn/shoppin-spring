@@ -14,6 +14,14 @@ public class CartService {
         return cartMapper.cartSave(cartDto);
     }
 
+    public int tmpCartSave(List<CartDto> cartList){
+        int r = 0;
+        for(int i=0;i<cartList.size();i++){
+            r = cartMapper.tmpCartSave(cartList.get(i));
+        }
+        return r;
+    }
+
     public List<CartDto> cartList(String userId){
         return cartMapper.cartList(userId);
     }
@@ -22,4 +30,11 @@ public class CartService {
         return cartMapper.cartDelete(userId,productId);
     }
 
+    public int tmpCartDelete(String userId){
+        return cartMapper.tmpCartDelete(userId);
+    }
+
+    public List<CartDto> tmpCartList(String userId) {
+        return cartMapper.tmpCartList(userId);
+    }
 }

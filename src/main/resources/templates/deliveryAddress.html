@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+        html,body{
+            height: 720px;
+            width: 460px;
+            margin: 0px;
+            padding: 0px;
+        }
+        .main{
+            display: flex;
+            flex-flow: column;
+            height: 100%;
+            width: 100%;
+        }
+        .main h3{
+            background-color: rgb(245, 245, 245);
+            display: flex;
+            align-items: center;
+            height: 52px;
+            padding: 12px 16px;
+            margin: 0px;
+        }
+        .main .search{
+            background-color: rgb(245, 245, 245);
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0px 16px 12px 16px;
+            position: relative;
+        }
+        .main input{
+            box-sizing: border-box;
+            height: 36px;
+            width: 100%;
+            border: none;
+            padding: 0px 31px 0px 10px;
+            border-radius: 5px;
+        }
+        .main svg{
+            position: absolute;
+            cursor: pointer;
+            right: 23px;
+            top: 9px;
+        }
+
+        .main button{
+            background: none;
+            border: 1px solid black;
+            outline: none;
+            border-radius: 5px;
+            margin: 12px 16px;
+            box-sizing: border-box;
+        }
+        .main .address-add{
+            height: 36px;
+            background: none;
+            border: 1px solid #e0e0e0;
+            outline: none;
+            cursor: pointer;
+        }
+        .main .address-list{
+            flex: 1;
+            padding: 0px 10px;
+            gap: 20px;
+            display: flex;
+            flex-flow: column;
+            overflow-y: auto;
+        }
+        .main .user-info{
+            display: flex;
+        }
+        .main .user-info input{
+            width: 15px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .main .user-info div{
+            display: flex;
+            flex-flow: column;
+            gap: 3px;
+        }
+        .main .user-info div em{
+            font-style: normal;
+        }
+        .main .user-info div span:nth-child(1){
+            display: flex;
+            align-items: center;
+        }
+        .main .user-info div .name{
+            font-weight: 600;
+            font-size: 15px;
+            margin-right: 5px;
+        }
+        .main .user-info div .default-yn{
+            background-color: #e8e8e8;
+            padding: 0px 4px;
+            font-size: 10px;
+            border-radius: 3px;
+        }
+        .main .user-info div .address{
+            font-size: 13px;
+        }
+        .main .user-info div .phon{
+            font-size: 13px;
+        }
+        .main .user-info div .change-del{
+            display: flex;
+            gap: 5px;
+            flex-flow: row;
+        }
+        .main .user-info div .change-del button{
+            margin: 0;
+            width: 38px;
+            font-size: 12px;
+            padding: 0px;
+            height: 21px;
+            cursor: pointer;
+        }
+        .main .ok{
+            color: white;
+            background-color: black;
+            height: 36px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h3>배송지 정보</h3>
+        <div class="search">
+            <input type="text" placeholder="배송지 이름, 주소, 연락처로 검색하세요" class="">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8.5" cy="8.5" r="5.5" stroke="#8A8A8A"></circle><path d="M12.5 12.5L17 17" stroke="#8A8A8A"></path></svg>
+        </div>
+        <button class="address-add">배송지 추가하기</button>
+        <div class="address-list"></div>
+        <button class="ok">변경하기</button>
+    </div>
+</body>
+<script>
+    $.ajax({
+        url : '/deliveryAddressList',
+        type : 'POST',
+        data : {"userId":"deoksu"},
+        success : function(data){
+            for(let i=0;i<data.length;i++){
+                let t = ''
+                t += '<div class="user-info">'
+                t +=    '<input type="radio" name="chose" '+(data[i].defaultYn=='Y'?'checked':'')+'>'
+                t +=    '<div>'
+                t +=       '<span><em class="name">'+data[i].name+'</em>'
+                t +=       data[i].defaultYn=='Y' ? '<em class="default-yn">기본 배송지</em></span>' : '</span>'
+                t +=       '<span class="address">'+data[i].address+' '+data[i].detailAddress+(data[i].extraAddress!=''?data[i].extraAddress:'')+'</span>'
+                t +=       '<span class="phon">'+data[i].phon+'</span>'
+                t +=       '<div class="change-del"><button class="change" value="'+data[i].deliveryAddressId+'">수정</button>'
+                t +=       data[i].defaultYn=='Y' ? '</div>' : '<button class="del" value="'+data[i].deliveryAddressId+'">삭제</button></div>'
+                t +=    '</div>'
+                t += '</div>'
+                document.querySelector('.address-list').innerHTML += t
+            }
+        },
+        error : function(error){
+            console.log(error)
+        }
+    });
+
+    document.querySelector(".address-list").addEventListener("click",(e)=>{
+        if(e.target.className=='del'){
+            $.ajax({
+                url : '/deliveryAddressDelete',
+                type : 'POST',
+                data : {"deliveryAddressId":e.target.value},
+                success : function(data){
+                    if(data==1){
+                        e.target.parentNode.parentNode.parentNode.remove()
+                    }
+                },
+                error : function(error){
+                    console.log(error)
+                }
+            });
+        }else if(e.target.className == 'change'){
+            location.href='/deliveryAddressSC?deliveryAddressId="'+e.target.value+'"'
+        }
+    })
+    
+    document.querySelector(".address-add").addEventListener("click",()=>{location.href='/deliveryAddressSC'})
+</script>
+</html>

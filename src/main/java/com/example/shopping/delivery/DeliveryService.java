@@ -75,4 +75,35 @@ public class DeliveryService {
         }
     }
 
+    public int deliveryAddressSave(deliveryAddressListDto deliveryAddressListDto) {
+        System.out.println(deliveryAddressListDto.toString());
+        if(deliveryAddressListDto.getDefaultYn().equals("Y")){
+            deliveryMapper.deliveryAddressChangeDefaultYn(deliveryAddressListDto.getUserId());
+        }
+        return deliveryMapper.deliveryAddressSave(deliveryAddressListDto);
+    }
+
+    public int deliveryAddressChange(deliveryAddressListDto deliveryAddressListDto) {
+        if(deliveryAddressListDto.getDefaultYn().equals("Y")){
+            deliveryMapper.deliveryAddressChangeDefaultYn(deliveryAddressListDto.getUserId());
+        }
+        System.out.println(deliveryAddressListDto.toString());
+        return deliveryMapper.deliveryAddressChange(deliveryAddressListDto);
+    }
+
+    public List<deliveryAddressListDto> deliveryAddressList(String userId) {
+        return deliveryMapper.deliveryAddressList(userId);
+    }
+
+    public deliveryAddressListDto deliveryAddressDefault(String userId){
+        return deliveryMapper.deliveryAddressDefault(userId);
+    }
+
+    public int deliveryAddressDelete(String deliveryAddressId) {
+        return deliveryMapper.deliveryAddressDelete(deliveryAddressId);
+    }
+
+    public deliveryAddressListDto deliveryAddressOne(String deliveryAddressId) {
+        return deliveryMapper.deliveryAddressOne(deliveryAddressId);
+    }
 }

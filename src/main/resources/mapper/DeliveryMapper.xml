@@ -49,4 +49,98 @@
             , status=#{status}
         WHERE deliveryId=#{deliveryId}
     </update>
+
+    <insert id="deliveryAddressSave">
+        INSERT INTO deliveryAddressList
+        (
+            userId
+            , name
+            , postcode
+            , address
+            , detailAddress
+            , extraAddress
+            , phon
+            , defaultYn
+        )
+        VALUES(
+            #{userId}
+            , #{name}
+            , #{postcode}
+            , #{address}
+            , #{detailAddress}
+            , #{extraAddress}
+            , #{phon}
+            , #{defaultYn}
+        );
+    </insert>
+
+    <update id="deliveryAddressChange">
+        UPDATE deliveryAddressList
+        SET
+            name=#{name}
+            , postcode=#{postcode}
+            , address=#{address}
+            , detailAddress=#{detailAddress}
+            , extraAddress=#{extraAddress}
+            , phon=#{phon}
+            , defaultYn=#{defaultYn}
+        WHERE deliveryAddressId=#{deliveryAddressId}
+    </update>
+
+    <update id="deliveryAddressChangeDefaultYn">
+        UPDATE deliveryAddressList
+        SET defaultYn = 'N'
+        WHERE userId=#{userId}
+    </update>
+
+    <select id="deliveryAddressList" resultType="Map">
+        SELECT
+            userId
+            , name
+            , postcode
+            , address
+            , detailAddress
+            , extraAddress
+            , phon
+            , defaultYn
+            , deliveryAddressId
+        FROM deliveryAddressList
+        WHERE userId=#{userId}
+        ORDER BY defaultYn desc
+    </select>
+
+    <select id="deliveryAddressOne">
+        SELECT
+            userId
+            , name
+            , postcode
+            , address
+            , detailAddress
+            , extraAddress
+            , phon
+            , defaultYn
+            , deliveryAddressId
+        FROM deliveryAddressList
+        WHERE deliveryAddressId=#{deliveryAddressId}
+    </select>
+
+    <select id="deliveryAddressDefault">
+        SELECT
+            userId
+            , name
+            , postcode
+            , address
+            , detailAddress
+            , extraAddress
+            , phon
+            , defaultYn
+            , deliveryAddressId
+        FROM deliveryAddressList
+        WHERE userId=#{userId} AND defaultYn='Y'
+    </select>
+
+    <delete id="deliveryAddressDelete">
+        DELETE FROM deliveryAddressList
+        WHERE deliveryAddressId=#{deliveryAddressId}
+    </delete>
 </mapper>

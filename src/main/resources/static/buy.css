@@ -3,6 +3,70 @@
     justify-content: center;
     gap: 35px;
 }
+.main .page-title{
+    font-size: 17px;
+    font-weight: 500;
+}
+.main .delivery-info{
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+    margin: 50px 0px;
+}
+.main .delivery-info .user-info{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.main .delivery-info .user-info span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.main .delivery-info .name{
+    font-size: 19px;
+    font-weight: 600;
+    padding-bottom: 3px;
+}
+.main .delivery-info .default-yn{
+    font-size: 12px;
+    background-color: #ebebeb;
+    padding: 0px 5px;
+    border-radius: 5px;
+}
+.main .delivery-info button{
+    cursor: pointer;
+    background: none;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+.main .delivery-info .address{
+    font-size: 13px;
+}
+.main .delivery-info .phon{
+    font-size: 13px;
+}
+.main .delivery-info select{
+    font-size: 15px;
+    padding: 10px 5px;
+    outline: none;
+}
+.main .delivery-info .select-default{
+    color: #e8e8e8;
+}
+.main .delivery-info textarea{
+    height: 128px;
+    padding: 8px 8px 0;
+    resize: none;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    border-radius: 4px;
+}
+.main .delivery-info textarea.hidden{
+    display: none;
+}
 .main table{
     width: 760px;
 }
@@ -123,3 +187,4 @@
     color: white;
     border-radius: 5px;
 }
+

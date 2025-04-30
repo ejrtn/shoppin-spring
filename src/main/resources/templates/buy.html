@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns:if="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/buy.css" rel="stylesheet" />
+</head>
+<body>
+    <header th:replace="/header :: header"></header>
+    <div class="main">
+        <div>
+            <label class="page-title">주문서</label>
+            <div class="delivery-info">
+                <p class="user-info">
+                    <span>
+                        <em class="name"></em>
+                        <em class="default-yn">기본 배송지</em>
+                    </span>
+                    <button class="address-change">배송지 변경</button>
+                </p>
+                <p class="address"></p>
+                <p class="phon"></p>
+                <select>
+                    <option selected hidden>배송 요청사항을 선택해주세요</option>
+                    <option>문 앞에 놔주세요</option>
+                    <option>경비실에 맡겨주세요</option>
+                    <option>택배함에 넣어주세요</option>
+                    <option>배송 전에 연락 주세요</option>
+                    <option>직접입력</option>
+                </select>
+                <textarea class="hidden" placeholder="최대 50자까지 입력 가능합니다." maxlength="50"></textarea>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>이미지</th>
+                        <th>정보</th>
+                        <th>옵션</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="total">
+            <h3>구매 금액</h3>
+            <p><span>상품 금액</span><span class="product-total-money">0</span><span>원</span></p>
+            <p><span>할인 금액</span><span class="product-total-discount-money">0</span><span>원</span></p>
+            <p><span>배송비</span><span class="delivery-money">0</span><span>원</span></p>
+            <p><span>총 구매 금액</span><span class="total-buy-money">0</span><span>원</span></p>
+            <button class="buy-btn">구매하기</button>
+        </div>
+    </div>
+</body>
+<script>
+
+
+    $.ajax({
+        url : '/tmpCartList',
+        type : 'POST',
+        data : {"userId":"deoksu"},
+        success : function(data){
+            for(let i=0;i<data.length;i++){
+                data.cnt = JSON.parse(data[i].cnt)
+                let c_total = {}
+                let t = ""
+                t += '<tr>'
+                t +=    '<td>'
+                t +=        '<picture>'
+                t +=            '<source srcset="/imgLoad?img='+data[i].img+'" type="image/webp" />'
+                t +=            '<img src="/imgLoad?img='+data[i].img+'" />'
+                t +=        '</picture>'
+                t +=    '</td>'
+                t +=    '<td>'
+                t +=        data[i].productName
+                t +=        '<span class="price"><em class="discount">'+(data[i].discount==0 ? '' : data[i].discount+'%')+'</em><em>'+data[i].price+'</em></span>'
+                
+                t +=    '</td>'
+                t +=    '<td>'
+                t +=        '<div class="size-cnt">'
+                for(let color in data.cnt){
+                    for(let size in data.cnt[color]){
+                        if(data.cnt[color][size] > 0){
+                        t += '<div class="size-cnt-one">'
+                        t +=     '<div class="color-'+color+'" style="background-color:#'+color+';' +
+                                    'border-color:#'+(parseInt(color)>7631988?"000000":'ffffff')+';' +
+                                    'color:#'+(parseInt(color)<7631988?"ffffff":'000000')+';"></div>'
+                        t +=     '<label class="size">'+size+'</label>'
+                        t +=     '<label class="cnt">'
+                        t +=         '<span class="num">'+data.cnt[color][size]+'개</span>'
+                        t +=      '</label>'
+                        t +=      '<label class="money">'+(parseInt(data[i].price * ((100-parseInt(data[i].discount))*0.01))*parseInt(data.cnt[color][size]))+'원</label>'
+                        t += '</div>'
+                        }
+                    }
+                }
+                t +=        '</div>'
+                t +=        '<p class="total-money"><span class="total-cnt">총 0개</span><span class="money">0원</span></p>'
+                t +=    '</td>'
+                t += '</tr>'
+                document.querySelector("tbody").innerHTML += t;
+
+                let el = document.querySelectorAll("tbody tr")[i]
+                let el2 = el.querySelectorAll(".size-cnt-one .num")
+                let el3 = el.querySelectorAll(".size-cnt-one .money")
+                let total_cnt = 0
+                let total_money = 0
+                for(let a=0;a<el2.length;a++){
+                    total_cnt += parseInt(el2[a].textContent)
+                    total_money += parseInt(el3[a].textContent.replace("원",""))
+                }
+                el.querySelector(".total-money .total-cnt").textContent = "총 "+total_cnt+"개"
+                el.querySelector(".total-money .money").textContent = total_money+"원"
+                
+                document.querySelector(".total .product-total-money").textContent = parseInt(document.querySelector(".total .product-total-money").textContent)+data[i].price*total_cnt
+                document.querySelector(".total .product-total-discount-money").textContent = parseInt(document.querySelector(".total .product-total-discount-money").textContent)+((parseInt(data[i].price)*total_cnt)-total_money)
+            }
+            document.querySelector(".total .total-buy-money").textContent = 
+            parseInt(document.querySelector(".total .product-total-money").textContent)-parseInt(document.querySelector(".total .product-total-discount-money").textContent)
+            
+            
+            
+        },
+        error : function(error){
+            console.log(error)
+        }
+    });
+
+    $.ajax({
+        url : '/deliveryAddressDefault',
+        type : 'POST',
+        data : {"userId":"deoksu"},
+        success : function(data){
+            document.querySelector(".delivery-info .name").textContent = data.name
+            document.querySelector(".delivery-info .phon").textContent = data.phon
+            document.querySelector(".delivery-info .address").textContent = data.address+' '+data.detailAddress+(data.extraAddress!=''?data.extraAddress:'')
+        },
+        error : function(error){
+            console.log(error)
+        }
+    });
+
+    document.querySelector(".delivery-info select").addEventListener("input",(e)=>{
+        if(e.target.value == "직접입력"){
+            document.querySelector(".delivery-info textarea").classList.remove("hidden")
+        }else{
+            document.querySelector(".delivery-info textarea").classList.add("hidden")
+        }
+    })
+
+    document.querySelector(".address-change").addEventListener("click",()=>{
+        const win = window.open("/deliveryAddress", "addressList", "width=448,height=690")
+    })
+
+    function calculate(target){
+        let currentTarget = target.parentNode.parentNode.parentNode.parentNode.parentNode
+        let discount = currentTarget.querySelectorAll(".price em")[0].textContent
+        discount = discount == '' ? 0 : parseInt(discount)
+        let money = parseInt(currentTarget.querySelectorAll(".price em")[1].textContent);
+        let num = parseInt(target.parentNode.parentNode.querySelector(".num").textContent)
+        target.parentNode.parentNode.querySelector(".money").textContent = (num * parseInt(money * ((100-parseInt(discount))*0.01))) + '원'
+        
+        let total_num = 0;
+        for(let i=0;i<currentTarget.querySelectorAll(".size-cnt-one .num").length;i++){
+            total_num += parseInt(currentTarget.querySelectorAll(".size-cnt-one .num")[i].textContent)
+        }
+        currentTarget.querySelector(".total-cnt").textContent = "총 "+total_num + '개'
+        currentTarget.querySelector(".total-money .money").textContent = (total_num * parseInt(money * ((100-parseInt(discount))*0.01))) + '원'
+    }
+</script>
+</html>

@@ -3,7 +3,6 @@ package com.example.shopping.delivery;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface DeliveryMapper {
@@ -15,4 +14,18 @@ public interface DeliveryMapper {
     int deliveryUpdate(DeliveryDto deliveryDto);
 
     DeliveryDto delivery(String deliveryId);
+
+    int deliveryAddressSave(deliveryAddressListDto deliveryAddressListDto);
+
+    List<deliveryAddressListDto> deliveryAddressList(String userId);
+
+    deliveryAddressListDto deliveryAddressDefault(String userId);
+
+    int deliveryAddressDelete(String deliveryAddressId);
+
+    int deliveryAddressChange(deliveryAddressListDto deliveryAddressListDto);
+
+    void deliveryAddressChangeDefaultYn(String userId);
+
+    deliveryAddressListDto deliveryAddressOne(String deliveryAddressId);
 }

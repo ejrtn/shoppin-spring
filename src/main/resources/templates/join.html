@@ -108,13 +108,13 @@
         <input type="text" placeholder="핸드폰 번호(- 입력)" class="phon">
         <label class="phon-result color-red">핸드폰 번호 입력 해주세요.</label>
         <div class="address">
-            <input type="text" id="sample6_postcode" placeholder="우편번호">
+            <input type="text" id="sample6_postcode" placeholder="우편번호" readonly>
             <button onclick="sample6_execDaumPostcode()">우편번호 찾기</button>
         </div>
-        <input type="text" id="sample6_address" placeholder="주소">
+        <input type="text" id="sample6_address" placeholder="주소" readonly>
         <div class="address2">
             <input type="text" id="sample6_detailAddress" placeholder="상세주소">
-            <input type="text" id="sample6_extraAddress" placeholder="참고항목">
+            <input type="text" id="sample6_extraAddress" placeholder="참고항목" readonly>
         </div>
         <label class="address-result color-red">주소 입력 해주세요.</label>
         <input type="date" class="yyyymmdd">
@@ -282,10 +282,10 @@
                     "gender":document.querySelector(".gender-result").textContent.includes("남성")?"남성":"여성",
                     "email":document.querySelector(".email").value,
                     "phonNumber":document.querySelector(".phon").value,
-                    "address":document.querySelector("#sample6_postcode").value + " - " +
-                                document.querySelector("#sample6_address").value + " " +
-                                document.querySelector("#sample6_detailAddress").value + " " +
-                                document.querySelector("#sample6_extraAddress").value,
+                    "postcode":document.querySelector("#sample6_postcode").value,
+                    "address":document.querySelector("#sample6_address").value,
+                    "detailAddress":document.querySelector("#sample6_detailAddress").value,
+                    "extraAddress":document.querySelector("#sample6_extraAddress").value,
                     "yyyymmdd":document.querySelector(".yyyymmdd").value
                 },
                 success : function(data){

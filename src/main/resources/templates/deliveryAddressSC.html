@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        html,body{
+            height: 720px;
+            width: 460px;
+            margin: 0px;
+            padding: 0px;
+        }
+        .main{
+            display: flex;
+            flex-flow: column;
+            height: 100%;
+            width: 100%;
+            padding: 0px 16px;
+            box-sizing: border-box;
+        }
+        .main span{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0px;
+            margin-bottom: 30px;
+        }
+        .main label{
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .main span .close{
+            cursor: pointer;
+        }
+        .main input{
+            box-sizing: border-box;
+            height: 36px;
+            width: 100%;
+            border:1px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 0px 8px;
+        }
+        .main .content{
+            display: flex;
+            flex-flow: column;
+            flex: 1;
+        }
+        .main .address{
+            display: flex;
+            margin-bottom: 3px;
+            gap: 3px;
+            flex-flow: row;
+        }
+        .main .address input{
+            margin: 0;
+            flex: 1;
+        }
+        .main .address button{
+            cursor: pointer;
+            background:none;
+            outline: none;
+            border: 1px solid #e0e0e0;
+            height: 35px;
+            border-radius: 5px;
+        }
+        .main .address2{
+            margin-bottom: 8px;
+            display: flex;
+            gap: 3px;
+        }
+        .main #sample6_address{
+            margin-bottom: 3px;
+        }
+        .main #sample6_detailAddress, #sample6_extraAddress{
+            width: 50%;
+        }
+        .main .default-checked input{
+            width: 15px;
+            height: 15px;
+            margin: 0px 5px 0px 0px;
+            border: 1px solid #e0e0e0;
+        }
+        .main .default-checked em{
+            font-style: normal;
+        }
+        .main .ok{
+            color: white;
+            background-color: black;
+            height: 40px;
+            cursor: pointer;
+            border: 1px solid black;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <input type="hidden" class="id" th:value="${deliveryAddressId}">
+        <span>
+            <label></label><label class="close">X</label>
+        </span>
+        <div class="content">
+            <label>이름</label>
+            <input type="text" placeholder="받는 분의 이름을 입력해주세요" class="name">
+            <label>휴대폰번호</label>
+            <input type="text" placeholder="휴대폰번호를 입력해주세요" class="phon">
+            <label>주소</label>
+            <div class="address">
+                <input type="text" id="sample6_postcode" placeholder="우편번호" readonly>
+                <button onclick="sample6_execDaumPostcode()">우편번호 찾기</button>
+            </div>
+            <input type="text" id="sample6_address" placeholder="주소" readonly>
+            <div class="address2">
+                <input type="text" id="sample6_detailAddress" placeholder="상세주소">
+                <input type="text" id="sample6_extraAddress" placeholder="참고항목" readonly>
+            </div>
+            <div class="default-checked">
+                <input type="checkbox">
+                <em>기본 배송지로 설정</em>
+            </div>
+        </div>
+        <button class="ok">저장하기</button>
+    </div>
+</body>
+<script>
+    if(document.querySelector(".id").value == ''){
+        document.querySelectorAll("span label")[0].textContent = '배송지 추가'
+    }else{
+        document.querySelectorAll("span label")[0].textContent = '배송지 수정'
+        $.ajax({
+            url : 'deliveryAddressOne',
+            type : 'POST',
+            data : {
+                "deliveryAddressId":document.querySelector(".id").value.replaceAll('"','')
+            },
+            success : function(data){
+                document.querySelector(".name").value = data.name
+                document.querySelector(".phon").value = data.phon
+                document.querySelector("#sample6_postcode").value = data.postcode
+                document.querySelector("#sample6_address").value = data.address
+                document.querySelector("#sample6_detailAddress").value = data.detailAddress
+                document.querySelector("#sample6_extraAddress").value = data.extraAddress
+                document.querySelector(".default-checked input").checked = data.defaultYn == 'Y'
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    }
+    function sample6_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("sample6_extraAddress").value = extraAddr;
+                
+                } else {
+                    document.getElementById("sample6_extraAddress").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('sample6_postcode').value = data.zonecode;
+                document.getElementById("sample6_address").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("sample6_detailAddress").focus();
+
+            }
+        }).open();
+    }
+    document.querySelector(".ok").addEventListener("click",(e)=>{
+        let url = '/deliveryAddressSave'
+        let data = {
+            "userId":'deoksu',
+            "name":document.querySelector(".name").value,
+            "phon":document.querySelector(".phon").value,
+            "postcode":document.querySelector("#sample6_postcode").value,
+            "address":document.querySelector("#sample6_address").value,
+            "detailAddress":document.querySelector("#sample6_detailAddress").value,
+            "extraAddress":document.querySelector("#sample6_extraAddress").value,
+            "defaultYn":document.querySelector(".default-checked input").checked ? 'Y':'N',
+        }
+        if(document.querySelector(".id").value != ''){
+            data["deliveryAddressId"] = document.querySelector(".id").value.replaceAll('"','')
+            url = 'deliveryAddressChange'
+        }
+        console.log(data)
+        $.ajax({
+            url : url,
+            type : 'POST',
+            data : data,
+            success : function(data){
+                if(data == 1){
+                    location.href = '/deliveryAddress'
+                }
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    })
+
+    document.querySelector(".close").addEventListener("click",()=>{location.href='/deliveryAddress'})
+</script>
+</html>

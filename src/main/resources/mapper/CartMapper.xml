@@ -17,6 +17,8 @@
         )
     </insert>
 
+
+
     <select id="cartList" resultType="Map">
 		SELECT
             c.productId
@@ -36,4 +38,38 @@
         DELETE FROM cart
         WHERE userId=#{userId} AND productId=#{productId}
     </delete>
+
+    <delete id="tmpCartDelete">
+        DELETE FROM tmpCart
+        WHERE userId=#{userId}
+    </delete>
+
+    <insert id="tmpCartSave">
+        INSERT INTO tmpCart
+        (
+        productId
+        , userId
+        , cnt
+        )
+        VALUES(
+        #{productId}
+        , #{userId}
+        , #{cnt}
+        )
+    </insert>
+
+    <select id="tmpCartList" resultType="Map">
+        SELECT
+        c.productId
+        , c.userId
+        , c.cnt
+        , p.img
+        , p.price
+        , p.discount
+        , p.productName
+        FROM shopping.tmpCart c
+        INNER JOIN shopping.products p
+        ON c.productId = p.productId
+        WHERE c.userId = #{userId}
+    </select>
 </mapper>

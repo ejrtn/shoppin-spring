@@ -7,12 +7,27 @@
 
     <insert id="userSave">
         INSERT INTO user
-        (name, userId, address, phonNumber, gender, password, yyyymmdd, email)
+        (
+            name
+            , userId
+            , postcode
+            , address
+            , detailAddress
+            , extraAddress
+            , phonNumber
+            , gender
+            , password
+            , yyyymmdd
+            , email
+        )
         VALUES(
             #{name}
             , #{userId}
             , #{address}
-            , #{phonNumber}
+            , #{postcode}
+            , #{address}
+            , #{detailAddress}
+            , #{extraAddress}
             , #{gender}
             , #{password}
             , #{yyyymmdd}
