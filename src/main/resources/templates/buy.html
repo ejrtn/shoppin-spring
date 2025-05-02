@@ -50,12 +50,12 @@
             <p><span>배송비</span><span class="delivery-money">0</span><span>원</span></p>
             <p><span>총 구매 금액</span><span class="total-buy-money">0</span><span>원</span></p>
             <button class="buy-btn">구매하기</button>
-            <button class="cancel-btn">취소소하기</button>
+            <!-- <button class="cancel-btn">취소소하기</button> -->
         </div>
     </div>
 </body>
 <script>
-    
+
 
     $.ajax({
         url : '/tmpCartList',
@@ -181,7 +181,7 @@
             url : '/kakaoPayment/refund',
             type : 'POST',
             success : function(data){
-                console.log(data)
+                // console.log(data)
             },
             error : function(error){
                 console.log(error)
