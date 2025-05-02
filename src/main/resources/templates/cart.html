@@ -12,7 +12,7 @@
         <table>
             <thead>
                 <tr>
-                    <th><input type="checkbox" class="clothes" name="clothes" value="all" checked></th>
+                    <th><input type="checkbox" id="clothes-all" class="clothes" name="clothes" value="all" checked></th>
                     <th>이미지</th>
                     <th>정보</th>
                     <th>옵션</th>
@@ -85,7 +85,7 @@
                 t +=        '</select>'
                 t +=    '</td>'
                 t +=    '<td>'
-                t +=    '<p class="x-btn">X</p>'
+                t +=        '<p class="x-btn">X</p>'
                 t +=        '<div class="size-cnt">'
                 for(let color in data.cnt){
                     for(let size in data.cnt[color]){
@@ -271,6 +271,25 @@
         }
     })
 
+    document.querySelector("table").addEventListener("click",(e)=>{
+        if(e.target.className == 'x-btn'){
+            $.ajax({
+                url : '/cartDelete',
+                type : 'POST',
+                data : {
+                    "userId":"deoksu",
+                    "productId":e.target.parentNode.parentNode.querySelector(".clothes").value
+                },
+                success : function(data){
+                    e.target.parentNode.parentNode.remove()
+                },
+                error : function(error){
+                    console.log(error)
+                }
+            });
+        }
+    })
+
     document.querySelector(".buy-btn").addEventListener("click",()=>{
 
         let el = document.querySelectorAll(".clothes")
@@ -315,6 +334,15 @@
         });
         
     })
+
+    document.querySelector("#clothes-all").addEventListener("click",(e)=>{
+        let el = document.querySelectorAll(".clothes")
+        for(let i=0;i<el.length;i++){
+            el[i].checked = e.target.checked
+        }
+    })
+
+
 
     function calculate(target){
         let currentTarget = target.parentNode.parentNode.parentNode.parentNode.parentNode

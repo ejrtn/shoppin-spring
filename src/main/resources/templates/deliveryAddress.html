@@ -73,6 +73,9 @@
         .main .user-info{
             display: flex;
         }
+        .main .user-info.hidden{
+            display: none;
+        }
         .main .user-info input{
             width: 15px;
             height: 20px;
@@ -132,7 +135,7 @@
     <div class="main">
         <h3>배송지 정보</h3>
         <div class="search">
-            <input type="text" placeholder="배송지 이름, 주소, 연락처로 검색하세요" class="">
+            <input type="text" placeholder="배송지 이름, 주소, 연락처로 검색하세요">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8.5" cy="8.5" r="5.5" stroke="#8A8A8A"></circle><path d="M12.5 12.5L17 17" stroke="#8A8A8A"></path></svg>
         </div>
         <button class="address-add">배송지 추가하기</button>
@@ -188,5 +191,45 @@
     })
     
     document.querySelector(".address-add").addEventListener("click",()=>{location.href='/deliveryAddressSC'})
+
+    document.querySelector(".ok").addEventListener("click",()=>{
+        let el = document.querySelectorAll(".user-info")
+        for(let i=0;i<el.length;i++){
+            if(el[i].querySelector("input").checked){
+                opener.document.querySelector(".name").textContent = el[i].querySelector(".name").textContent
+                opener.document.querySelector(".default-yn").textContent = el[i].querySelector(".default-yn")==null ? '' : '기본 배송지'
+                opener.document.querySelector(".address").textContent = el[i].querySelector(".address").textContent
+                opener.document.querySelector(".phon").textContent = el[i].querySelector(".phon").textContent
+                window.open('about:blank','_self').self.close();
+            }
+        }
+        
+    })
+
+    document.querySelector(".search input").addEventListener("input",(e)=>{
+        let name = document.querySelectorAll(".name")
+        let address = document.querySelectorAll(".address")
+        let phon = document.querySelectorAll(".phon")
+        for(let i=0;i<name.length;i++){
+            console.log(name[i].textContent.includes(e.target.value))
+            if(!name[i].textContent.includes(e.target.value)){
+                console.log(address[i].textContent.includes(e.target.value))
+                if(!address[i].textContent.includes(e.target.value)){
+                    console.log(phon[i].textContent.includes(e.target.value))
+                    if(!phon[i].textContent.includes(e.target.value)){
+                        phon[i].parentNode.parentNode.classList.add("hidden")
+                    }else{
+                        phon[i].parentNode.parentNode.classList.remove("hidden")
+                    }
+                }else{
+                    address[i].parentNode.parentNode.classList.remove("hidden")
+                }
+            }else{
+                name[i].parentNode.parentNode.parentNode.classList.remove("hidden")
+            }
+        }
+        
+        
+    })
 </script>
 </html>

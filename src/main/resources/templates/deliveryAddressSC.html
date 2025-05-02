@@ -217,7 +217,6 @@
             data["deliveryAddressId"] = document.querySelector(".id").value.replaceAll('"','')
             url = 'deliveryAddressChange'
         }
-        console.log(data)
         $.ajax({
             url : url,
             type : 'POST',

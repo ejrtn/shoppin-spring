@@ -129,7 +129,8 @@
 .main .x-btn{
     font-weight: 900;
     cursor: pointer;
-    text-align: end;
+    width: 12px;
+    align-self: end;
 }
 .main .total-money{
     display: flex;

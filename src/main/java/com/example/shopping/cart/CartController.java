@@ -25,6 +25,7 @@ public class CartController {
     }
 
     @PostMapping("cartDelete")
+    @ResponseBody
     public int cartDelete(String userId, String productId){
         return cartService.cartDelete(userId,productId);
     }

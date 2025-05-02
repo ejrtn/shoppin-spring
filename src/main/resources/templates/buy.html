@@ -50,11 +50,12 @@
             <p><span>배송비</span><span class="delivery-money">0</span><span>원</span></p>
             <p><span>총 구매 금액</span><span class="total-buy-money">0</span><span>원</span></p>
             <button class="buy-btn">구매하기</button>
+            <button class="cancel-btn">취소소하기</button>
         </div>
     </div>
 </body>
 <script>
-
+    
 
     $.ajax({
         url : '/tmpCartList',
@@ -151,6 +152,41 @@
 
     document.querySelector(".address-change").addEventListener("click",()=>{
         const win = window.open("/deliveryAddress", "addressList", "width=448,height=690")
+    })
+
+    document.querySelector(".buy-btn").addEventListener("click",()=>{
+        $.ajax({
+            url : '/kakaoPayment/ready',
+            type : 'POST',
+            data : {
+                "partner_order_id":'1',
+                "partner_user_id":'1',
+                "item_name":'상품명',
+                "quantity":1,
+                "total_amount":1100,
+                "tax_free_amount":0
+            },
+            success : function(data){
+                let win = window.open(data.next_redirect_pc_url,'kakapPay')
+                
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    })
+
+    document.querySelector(".cancel-btn").addEventListener("click",()=>{
+        $.ajax({
+            url : '/kakaoPayment/refund',
+            type : 'POST',
+            success : function(data){
+                console.log(data)
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
     })
 
     function calculate(target){
