@@ -2,7 +2,10 @@ package com.example.shopping.cart;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CartService {
@@ -14,12 +17,18 @@ public class CartService {
         return cartMapper.cartSave(cartDto);
     }
 
-    public int tmpCartSave(List<CartDto> cartList){
+    public String tmpCartSave(List<TmpCartDto> tmpCartDtos){
+        String key = String.valueOf(UUID.randomUUID());
         int r = 0;
-        for(int i=0;i<cartList.size();i++){
-            r = cartMapper.tmpCartSave(cartList.get(i));
+        for(int i=0;i<tmpCartDtos.size();i++){
+            tmpCartDtos.get(i).setKeyData(key);
+            r = cartMapper.tmpCartSave(tmpCartDtos.get(i));
+            if(r != 1) {
+                key = null;
+                break;
+            }
         }
-        return r;
+        return key;
     }
 
     public List<CartDto> cartList(String userId){
@@ -30,11 +39,11 @@ public class CartService {
         return cartMapper.cartDelete(userId,productId);
     }
 
-    public int tmpCartDelete(String userId){
-        return cartMapper.tmpCartDelete(userId);
+    public int tmpCartDelete(String keyData){
+        return cartMapper.tmpCartDelete(keyData);
     }
 
-    public List<CartDto> tmpCartList(String userId) {
-        return cartMapper.tmpCartList(userId);
+    public List<CartDto> tmpCartList(String keyData) {
+        return cartMapper.tmpCartList(keyData);
     }
 }

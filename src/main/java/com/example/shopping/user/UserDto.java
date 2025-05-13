@@ -17,4 +17,5 @@ public class UserDto {
     private String detailAddress;
     private String extraAddress;
     private String deleteYn;
+    private String partnerUserId;
 }

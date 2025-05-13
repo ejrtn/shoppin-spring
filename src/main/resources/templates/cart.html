@@ -293,46 +293,32 @@
     document.querySelector(".buy-btn").addEventListener("click",()=>{
 
         let el = document.querySelectorAll(".clothes")
-        $.ajax({
-            url : '/tmpCartDelete',
-            type : 'POST',
-            data : {
-                userId:document.querySelector("#userId").value==''?'deoksu':document.querySelector("#userId").value,
-            },
-            success : function(data){
-                let tmpCartData = []
-                for(let i=0;i<el.length;i++){
-                    if(el[i].checked){
-                        for(let a=0;a<cartData.length;a++){
-                            if(cartData[a].productId==el[i].value){
-                                tmpCartData.push({
-                                    productId:cartData[a].productId,
-                                    userId:cartData[a].userId,
-                                    cnt:cartData[a].cnt
-                                })
-                            }
-                        }
+        let tmpCartData = []
+        for(let i=0;i<el.length;i++){
+            if(el[i].checked){
+                for(let a=0;a<cartData.length;a++){
+                    if(cartData[a].productId==el[i].value){
+                        tmpCartData.push({
+                            productId:cartData[a].productId,
+                            userId:cartData[a].userId,
+                            cnt:cartData[a].cnt
+                        })
                     }
                 }
-                $.ajax({
-                    url : '/tmpCartSave',
-                    type : 'POST',
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    data : JSON.stringify(tmpCartData),
-                    success : function(data){
-                        location.href="/buy"
-                    },
-                    error : function(error){
-                        console.log(error)
-                    }
-                });
+            }
+        }
+        $.ajax({
+            url : '/tmpCartSave',
+            type : 'POST',
+            contentType: 'application/json',
+            data : JSON.stringify(tmpCartData),
+            success : function(data){
+                location.href="/buy?keyData="+data
             },
             error : function(error){
                 console.log(error)
             }
         });
-        
     })
 
     document.querySelector("#clothes-all").addEventListener("click",(e)=>{

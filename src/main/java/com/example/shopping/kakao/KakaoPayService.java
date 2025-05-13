@@ -1,17 +1,19 @@
 package com.example.shopping.kakao;
 
-import lombok.RequiredArgsConstructor;
+import com.example.shopping.delivery.DeliveryDto;
+import com.example.shopping.delivery.DeliveryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -22,6 +24,9 @@ public class KakaoPayService {
 
     @Value("${kakao.secretKey}")
     String admin_Key;
+
+    @Autowired
+    private DeliveryService deliveryService;
 
     private String tid;
 
@@ -34,10 +39,17 @@ public class KakaoPayService {
         return headers;
     }
 
-    public KakaoReadyResponse kakaoPayReady(KakaoReadyReqDto kakaoReadyReqDto) {
-
+    public KakaoReadyResponse kakaoPayReady(DeliveryDto deliveryDto) {
+        KakaoReadyReqDto kakaoReadyReqDto = new KakaoReadyReqDto();
         kakaoReadyReqDto.setCid(cid);
-        kakaoReadyReqDto.setApproval_url("http://localhost:8080/kakaoPayment/approve");
+        kakaoReadyReqDto.setPartner_order_id("1");
+        String partner_user_id = "1";
+        kakaoReadyReqDto.setPartner_user_id(partner_user_id);
+        kakaoReadyReqDto.setItem_name("DEOKSU "+(deliveryDto.getDeliveryDetailDtos().size()-1)+"개 제품 구매");
+        kakaoReadyReqDto.setQuantity(deliveryDto.getQuantity());
+        kakaoReadyReqDto.setTotal_amount(deliveryDto.getTotalAmount());
+        kakaoReadyReqDto.setTax_free_amount(0);
+        kakaoReadyReqDto.setApproval_url("http://localhost:8080/kakaoPayment/approve?");
         kakaoReadyReqDto.setCancel_url("http://localhost:8080/kakaoPayment/cancel");
         kakaoReadyReqDto.setFail_url("http://localhost:8080/kakaoPayment/fail");
 
@@ -57,7 +69,12 @@ public class KakaoPayService {
         // 주문번호와 TID를 매핑해서 저장해놓는다.
         // Mapping TID with partner_order_id then save it to use for approval request.
         this.tid = readyResponse.getTid();
-
+        if(deliveryDto.getDeliveryId() != 0){
+            deliveryService.deliveryRepay(deliveryDto.getTid(),tid);
+        }else {
+            deliveryDto.setTid(readyResponse.getTid());
+            deliveryService.deliverySave(deliveryDto);
+        }
         return readyResponse;
     }
 

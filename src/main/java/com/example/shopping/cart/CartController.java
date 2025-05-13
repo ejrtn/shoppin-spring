@@ -36,25 +36,25 @@ public class CartController {
     }
 
     @GetMapping("buy")
-    public String buy(){
+    public String buy(@RequestParam String keyData){
         return "buy";
     }
 
     @PostMapping("tmpCartSave")
     @ResponseBody
-    public int tmpCartSave(@RequestBody List<CartDto> cartList){
-        return cartService.tmpCartSave(cartList);
+    public String tmpCartSave(@RequestBody List<TmpCartDto> tmpCartDtos){
+        return cartService.tmpCartSave(tmpCartDtos);
     }
 
     @PostMapping("tmpCartDelete")
     @ResponseBody
-    public int tmpCartDelete(String userId){
-        return cartService.tmpCartDelete(userId);
+    public int tmpCartDelete(String keyData){
+        return cartService.tmpCartDelete(keyData);
     }
 
     @PostMapping("tmpCartList")
     @ResponseBody
-    public List<CartDto> tmpCartList(String userId){
-        return cartService.tmpCartList(userId);
+    public List<CartDto> tmpCartList(String keyData){
+        return cartService.tmpCartList(keyData);
     }
 }

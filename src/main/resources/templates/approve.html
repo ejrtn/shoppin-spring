@@ -3,10 +3,22 @@
 <head>
     <title>Kakaopay Sample</title>
     <meta charset="utf-8"/>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
-    <script>
-        window.open('about:blank','_self').self.close();
-    </script>
+<script th:inline="javascript">
+    console.log([[${response}]])
+    $.ajax({
+        url : '/deliveryStatusUpdate',
+        type : 'POST',
+        data : {"tid":[[${response.tid}]],"status":"결제완료"},
+        success : function(data){
+            window.open('about:blank','_self').self.close();
+        },
+        error : function(error){
+            console.log(error)
+        }
+    });
+</script>
 </body>
 </html>

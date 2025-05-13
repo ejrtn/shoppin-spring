@@ -48,6 +48,7 @@
             <p><span>상품 금액</span><span class="product-total-money">0</span><span>원</span></p>
             <p><span>할인 금액</span><span class="product-total-discount-money">0</span><span>원</span></p>
             <p><span>배송비</span><span class="delivery-money">0</span><span>원</span></p>
+            <p><span>총 개수</span><span class="total-buy-cnt">0</span><span>개</span></p>
             <p><span>총 구매 금액</span><span class="total-buy-money">0</span><span>원</span></p>
             <button class="buy-btn">구매하기</button>
             <!-- <button class="cancel-btn">취소소하기</button> -->
@@ -56,12 +57,13 @@
 </body>
 <script>
 
-
+    let deliveryDetailDtos;
     $.ajax({
         url : '/tmpCartList',
         type : 'POST',
-        data : {"userId":"deoksu"},
+        data : {"keyData":location.href.split("?keyData=")[1]},
         success : function(data){
+            deliveryDetailDtos = data
             for(let i=0;i<data.length;i++){
                 data.cnt = JSON.parse(data[i].cnt)
                 let c_total = {}
@@ -114,6 +116,7 @@
                 el.querySelector(".total-money .total-cnt").textContent = "총 "+total_cnt+"개"
                 el.querySelector(".total-money .money").textContent = total_money+"원"
                 
+                document.querySelector(".total .total-buy-cnt").textContent = parseInt(document.querySelector(".total .total-buy-cnt").textContent)+total_cnt;
                 document.querySelector(".total .product-total-money").textContent = parseInt(document.querySelector(".total .product-total-money").textContent)+data[i].price*total_cnt
                 document.querySelector(".total .product-total-discount-money").textContent = parseInt(document.querySelector(".total .product-total-discount-money").textContent)+((parseInt(data[i].price)*total_cnt)-total_money)
             }
@@ -155,20 +158,25 @@
     })
 
     document.querySelector(".buy-btn").addEventListener("click",()=>{
+        let select = document.querySelector("select").value
+        if(select == '배송 요청사항을 선택해주세요') select = '배송 요청사항 없습니다'
+        let data = {
+            "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu',
+            "name":document.querySelector(".name").textContent,
+            "address":document.querySelector(".address").textContent,
+            "phon":document.querySelector(".phon").textContent,
+            "request":(select=='직접입력' ? document.querySelector("textarea").value : select),
+            "quantity":document.querySelector(".total .total-buy-cnt").textContent,
+            "totalAmount":document.querySelector(".total .total-buy-money").textContent,
+            "deliveryDetailDtos":deliveryDetailDtos
+        }
         $.ajax({
             url : '/kakaoPayment/ready',
             type : 'POST',
-            data : {
-                "partner_order_id":'1',
-                "partner_user_id":'1',
-                "item_name":'상품명',
-                "quantity":1,
-                "total_amount":1100,
-                "tax_free_amount":0
-            },
+            contentType: 'application/json',
+            data : JSON.stringify(data),
             success : function(data){
                 let win = window.open(data.next_redirect_pc_url,'kakapPay')
-                
             },
             error : function(error){
                 console.log(error)
@@ -176,18 +184,33 @@
         });
     })
 
-    document.querySelector(".cancel-btn").addEventListener("click",()=>{
+    // document.querySelector(".cancel-btn").addEventListener("click",()=>{
+    //     $.ajax({
+    //         url : '/kakaoPayment/refund',
+    //         type : 'POST',
+    //         success : function(data){
+    //             // console.log(data)
+    //         },
+    //         error : function(error){
+    //             console.log(error)
+    //         }
+    //     });
+    // })
+
+    window.addEventListener('beforeunload', function(event) {
+      // 변경사항을 저장할 것인지 확인하는 메시지
         $.ajax({
-            url : '/kakaoPayment/refund',
+            url : '/tmpCartDelete',
             type : 'POST',
+            data : {"keyData":location.href.split("?keyData=")[1]},
             success : function(data){
-                // console.log(data)
+
             },
             error : function(error){
                 console.log(error)
             }
         });
-    })
+    });
 
     function calculate(target){
         let currentTarget = target.parentNode.parentNode.parentNode.parentNode.parentNode

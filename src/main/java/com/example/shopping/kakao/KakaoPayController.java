@@ -1,5 +1,6 @@
 package com.example.shopping.kakao;
 
+import com.example.shopping.delivery.DeliveryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,8 +17,8 @@ public class KakaoPayController {
 
     @PostMapping("/ready")  //결제준비요청
     @ResponseBody
-    public KakaoReadyResponse readyToKakaoPay(KakaoReadyReqDto kakaoReadyReqDto){
-        return kakaoPayService.kakaoPayReady(kakaoReadyReqDto);
+    public KakaoReadyResponse readyToKakaoPay(@RequestBody DeliveryDto deliveryDto){
+        return kakaoPayService.kakaoPayReady(deliveryDto);
     }
 
     @GetMapping("/approve")

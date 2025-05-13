@@ -41,7 +41,7 @@
 
     <delete id="tmpCartDelete">
         DELETE FROM tmpCart
-        WHERE userId=#{userId}
+        WHERE keyData=#{keyData}
     </delete>
 
     <insert id="tmpCartSave">
@@ -50,18 +50,19 @@
         productId
         , userId
         , cnt
+        , keyData
         )
         VALUES(
         #{productId}
         , #{userId}
         , #{cnt}
+        , #{keyData}
         )
     </insert>
 
     <select id="tmpCartList" resultType="Map">
         SELECT
         c.productId
-        , c.userId
         , c.cnt
         , p.img
         , p.price
@@ -70,6 +71,6 @@
         FROM shopping.tmpCart c
         INNER JOIN shopping.products p
         ON c.productId = p.productId
-        WHERE c.userId = #{userId}
+        WHERE c.keyData = #{keyData}
     </select>
 </mapper>

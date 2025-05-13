@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -17,15 +16,25 @@ public class DeliveryService {
     DeliveryMapper deliveryMapper;
 
     public int deliverySave(DeliveryDto deliveryDto){
-        return deliveryMapper.deliverySave(deliveryDto);
+        int result = deliveryMapper.deliverySave(deliveryDto);
+        if(result == 1) {
+            for (int i = 0; i < deliveryDto.getDeliveryDetailDtos().size(); i++) {
+                deliveryDto.getDeliveryDetailDtos().get(i).setDeliveryId(deliveryDto.getDeliveryId());
+                deliveryMapper.deliveryDetailSave(deliveryDto.getDeliveryDetailDtos().get(i));
+            }
+        }
+        return result;
     }
 
-    public List<DeliveryDto> deliveryList(DeliveryDto deliveryDto){
-        return deliveryMapper.deliveryList(deliveryDto);
+    public List<DeliveryDto> deliveryList(String userId){
+        return deliveryMapper.deliveryList(userId);
     }
 
-    public int deliveryUpdate(DeliveryDto deliveryDto){
-        return deliveryMapper.deliveryUpdate(deliveryDto);
+    public int deliveryStatusUpdate(String tid,String status){
+        return deliveryMapper.deliveryStatusUpdate(tid,status);
+    }
+    public int deliveryRepay(String tid,String newTid){
+        return deliveryMapper.deliveryRepay(tid,newTid);
     }
 
     public DeliveryDto delivery(String deliveryId){
@@ -75,15 +84,16 @@ public class DeliveryService {
         }
     }
 
-    public int deliveryAddressSave(deliveryAddressListDto deliveryAddressListDto) {
-        System.out.println(deliveryAddressListDto.toString());
+    public int deliveryAddressSave(DeliveryAddressListDto deliveryAddressListDto) {
+
         if(deliveryAddressListDto.getDefaultYn().equals("Y")){
             deliveryMapper.deliveryAddressChangeDefaultYn(deliveryAddressListDto.getUserId());
         }
+
         return deliveryMapper.deliveryAddressSave(deliveryAddressListDto);
     }
 
-    public int deliveryAddressChange(deliveryAddressListDto deliveryAddressListDto) {
+    public int deliveryAddressChange(DeliveryAddressListDto deliveryAddressListDto) {
         if(deliveryAddressListDto.getDefaultYn().equals("Y")){
             deliveryMapper.deliveryAddressChangeDefaultYn(deliveryAddressListDto.getUserId());
         }
@@ -91,11 +101,11 @@ public class DeliveryService {
         return deliveryMapper.deliveryAddressChange(deliveryAddressListDto);
     }
 
-    public List<deliveryAddressListDto> deliveryAddressList(String userId) {
+    public List<DeliveryAddressListDto> deliveryAddressList(String userId) {
         return deliveryMapper.deliveryAddressList(userId);
     }
 
-    public deliveryAddressListDto deliveryAddressDefault(String userId){
+    public DeliveryAddressListDto deliveryAddressDefault(String userId){
         return deliveryMapper.deliveryAddressDefault(userId);
     }
 
@@ -103,7 +113,11 @@ public class DeliveryService {
         return deliveryMapper.deliveryAddressDelete(deliveryAddressId);
     }
 
-    public deliveryAddressListDto deliveryAddressOne(String deliveryAddressId) {
+    public DeliveryAddressListDto deliveryAddressOne(String deliveryAddressId) {
         return deliveryMapper.deliveryAddressOne(deliveryAddressId);
+    }
+
+    public List<DeliveryDetailDto> deliveryDetailList(String deliveryId){
+        return deliveryMapper.deliveryDetailList(deliveryId);
     }
 }

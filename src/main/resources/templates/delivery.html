@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .main{
+            display: flex;
+            justify-content: center;
+        }
+        .main table thead th:nth-child(1){
+            width: 270px;
+        }
+        .main table thead th:nth-child(2){
+            width: 150px;
+        }
+        .main table thead th:nth-child(3){
+            width: 180px;
+        }
+        .main table thead th:nth-child(4){
+            width: 100px;
+        }
+        .main table tbody td,
+        .main table thead th{
+            border-bottom: 1px solid black;
+        }
+        .main table tbody td:nth-child(2),
+        .main table tbody td:nth-child(3),
+        .main table tbody td:nth-child(4){
+            text-align: center;
+        }
+        .main table tbody .recipient{
+            display: flex;
+            flex-flow: column;
+        }
+        .main table tbody .detail{
+            display: flex;
+            flex-flow: column;
+        }
+        .main table tbody .tracking,
+        .main table tbody .pay{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header th:replace="/header :: header"></header>
+    <div class="main">
+        <table>
+            <thead>
+                <tr>
+                    <th>주문정보</th>
+                    <th>받는사람</th>
+                    <th>주문날짜</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+    let list
+    $.ajax({
+        url : '/deliveryList',
+        type : 'POST',
+        data : {"userId":"deoksu"},
+        success : function(data){
+            list = data;
+            for(let i=0;i<data.length;i++){
+                let t = ''
+                t += '<tr>'
+                t +=    '<td>'
+                t +=        '<div class="detail">'   
+                t +=            '<span>제품 종류 : '+data[i].kindCnt+'개 </span>'
+                t +=            '<span>총 수량 : '+data[i].quantity+'개 </span>'
+                t +=            '<span>총 비용 : '+data[i].totalAmount+'원</span>'
+                t +=        '</div>'
+                t +=    '</td>'
+                t +=    '<td>'
+                t +=        '<span>'+data[i].name+'</span>'
+                t +=    '</td>'
+                t +=    '<td>'
+                t +=        '<span>'+data[i].cdate+'</span>'
+                t +=    '</td>'
+                t +=    '<td>'
+                t +=        '<span>'+data[i].status+'</span>'
+                if(data[i].status == '배송중'){
+                    t +=    '<p class="tracking">배송조회</p>'
+                }else if(data[i].status == "미결제"){
+                    t +=    '<p class="pay">결제하기</p>'
+                    t += '<input type="hidden" value="'+i+'" class="idx">'
+                }
+                t +=    '</td>'
+
+                document.querySelector("tbody").innerHTML += t
+            }
+        },
+        error : function(error){
+            console.log(error)
+        }
+    });
+
+    document.querySelector("tbody").addEventListener("click",(e)=>{
+        if(e.target.className=="pay"){
+            let deliveryDetailDtos;
+            let idx = e.target.nextElementSibling.value
+            $.ajax({
+                url : '/deliveryDetailList',
+                type : 'POST',
+                data : {"deliveryId":list[idx].deliveryId},
+                success : function(deliveryDetailDtos){
+                    let data = {
+                        "deliveryId":list[idx].deliveryId,
+                        "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu',
+                        "name":list[idx].name,
+                        "address":list[idx].address,
+                        "phon":list[idx].phon,
+                        "request":list[idx].request,
+                        "quantity":list[idx].quantity,
+                        "totalAmount":list[idx].totalAmount,
+                        "tid":list[idx].tid,
+                        "deliveryDetailDtos":deliveryDetailDtos
+                    }
+                    $.ajax({
+                        url : '/kakaoPayment/ready',
+                        type : 'POST',
+                        contentType: 'application/json',
+                        data : JSON.stringify(data),
+                        success : function(data){
+                            let win = window.open(data.next_redirect_pc_url,'kakapPay')
+                        },
+                        error : function(error){
+                            console.log(error)
+                        }
+                    });
+                },
+                error : function(error){
+                    console.log(error)
+                }
+            });
+        }
+        
+        
+    })
+</script>
+</html>

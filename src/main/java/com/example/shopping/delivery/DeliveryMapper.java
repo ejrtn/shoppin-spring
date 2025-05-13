@@ -9,23 +9,29 @@ public interface DeliveryMapper {
 
     int deliverySave( DeliveryDto deliveryDto);
 
-    List<DeliveryDto> deliveryList(DeliveryDto deliveryDto);
+    List<DeliveryDto> deliveryList(String userId);
 
-    int deliveryUpdate(DeliveryDto deliveryDto);
+    int deliveryStatusUpdate(String tid,String status);
 
     DeliveryDto delivery(String deliveryId);
 
-    int deliveryAddressSave(deliveryAddressListDto deliveryAddressListDto);
+    int deliveryDetailSave(DeliveryDetailDto deliveryDetailDto);
 
-    List<deliveryAddressListDto> deliveryAddressList(String userId);
+    List<DeliveryDetailDto> deliveryDetailList(String deliveryId);
 
-    deliveryAddressListDto deliveryAddressDefault(String userId);
+    int deliveryAddressSave(DeliveryAddressListDto deliveryAddressListDto);
+
+    List<DeliveryAddressListDto> deliveryAddressList(String userId);
+
+    DeliveryAddressListDto deliveryAddressDefault(String userId);
 
     int deliveryAddressDelete(String deliveryAddressId);
 
-    int deliveryAddressChange(deliveryAddressListDto deliveryAddressListDto);
+    int deliveryAddressChange(DeliveryAddressListDto deliveryAddressListDto);
 
     void deliveryAddressChangeDefaultYn(String userId);
 
-    deliveryAddressListDto deliveryAddressOne(String deliveryAddressId);
+    DeliveryAddressListDto deliveryAddressOne(String deliveryAddressId);
+
+    int deliveryRepay(String tid,String newTid);
 }

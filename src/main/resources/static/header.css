@@ -33,6 +33,9 @@ h3{
     margin: 0px;
     padding: 0px;
 }
+table{
+    border-collapse : collapse;
+}
 header h3{
     margin: 0px;
     padding: 0px 11px;

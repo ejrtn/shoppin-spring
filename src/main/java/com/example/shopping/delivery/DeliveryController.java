@@ -27,13 +27,15 @@ public class DeliveryController {
     }
 
     @PostMapping("deliveryList")
-    public List<DeliveryDto> deliveryList(DeliveryDto deliveryDto){
-        return deliveryService.deliveryList(deliveryDto);
+    @ResponseBody
+    public List<DeliveryDto> deliveryList(@RequestParam String userId){
+        return deliveryService.deliveryList(userId);
     }
 
-    @PostMapping("deliveryUpdate")
-    public int deliveryUpdate(DeliveryDto deliveryDto){
-        return deliveryService.deliveryUpdate(deliveryDto);
+    @PostMapping("deliveryStatusUpdate")
+    @ResponseBody
+    public int deliveryStatusUpdate(@RequestParam String tid,@RequestParam String status){
+        return deliveryService.deliveryStatusUpdate(tid,status);
     }
 
     @PostMapping("delivery")
@@ -55,31 +57,31 @@ public class DeliveryController {
 
     @PostMapping("deliveryAddressSave")
     @ResponseBody
-    public int deliveryAddressSave(deliveryAddressListDto deliveryAddressListDto){
+    public int deliveryAddressSave(DeliveryAddressListDto deliveryAddressListDto){
         return deliveryService.deliveryAddressSave(deliveryAddressListDto);
     }
 
     @PostMapping("deliveryAddressChange")
     @ResponseBody
-    public int deliveryAddressChange(deliveryAddressListDto deliveryAddressListDto){
+    public int deliveryAddressChange(DeliveryAddressListDto deliveryAddressListDto){
         return deliveryService.deliveryAddressChange(deliveryAddressListDto);
     }
 
     @PostMapping("deliveryAddressList")
     @ResponseBody
-    public List<deliveryAddressListDto> deliveryAddressList(String userId){
+    public List<DeliveryAddressListDto> deliveryAddressList(String userId){
         return deliveryService.deliveryAddressList(userId);
     }
 
     @PostMapping("deliveryAddressDefault")
     @ResponseBody
-    public deliveryAddressListDto deliveryAddressDefault(String userId){
+    public DeliveryAddressListDto deliveryAddressDefault(String userId){
         return deliveryService.deliveryAddressDefault(userId);
     }
 
     @PostMapping("deliveryAddressOne")
     @ResponseBody
-    public deliveryAddressListDto deliveryAddressOne(String deliveryAddressId){
+    public DeliveryAddressListDto deliveryAddressOne(String deliveryAddressId){
         return deliveryService.deliveryAddressOne(deliveryAddressId);
     }
 
@@ -99,5 +101,11 @@ public class DeliveryController {
 
         model.addAttribute("deliveryAddressId",deliveryAddressId);
         return "deliveryAddressSC";
+    }
+
+    @PostMapping("deliveryDetailList")
+    @ResponseBody
+    public List<DeliveryDetailDto> deliveryDetailList(@RequestParam String deliveryId){
+        return deliveryService.deliveryDetailList(deliveryId);
     }
 }

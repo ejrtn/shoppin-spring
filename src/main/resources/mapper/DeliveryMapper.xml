@@ -5,52 +5,123 @@
 <mapper namespace="com.example.shopping.delivery.DeliveryMapper">
 
     <insert id="deliverySave">
+        <selectKey keyProperty="deliveryId" order="AFTER" resultType="int">
+            SELECT lastval(sq_delivery);
+        </selectKey>
         INSERT INTO deliveryList
-        (address, priceTotal, detail, userId, status, deliveryId)
+        (
+            address
+            , totalAmount
+            , userId
+            , name
+            , phon
+            , request
+            , quantity
+            , tid
+        )
         VALUES(
             #{address}
-            , #{priceTotal}
-            , #{detail}
+            , #{totalAmount}
             , #{userId}
-            , #{status}
-            , #{deliveryId}
+            , #{name}
+            , #{phon}
+            , #{request}
+            , #{quantity}
+            , #{tid}
         )
+
     </insert>
 
     <select id="deliveryList" resultType="Map">
         SELECT
-            address
-            , priceTotal
-            , detail
-            , userId
-            , cdate
-            , status
-            , deliveryId
-        FROM deliveryList;
+            a.deliveryId
+            , a.address
+            , a.totalAmount
+            , a.userId
+            , DATE_FORMAT(a.cdate,'%Y-%m-%d %H:%i:%s') cdate
+            , a.status
+            , a.name
+            , a.phon
+            , a.request
+            , a.quantity
+            , a.tid
+            , count(*) as kindCnt
+        FROM deliveryList a
+        INNER JOIN deliveryDetail b
+        ON a.deliveryId = b.deliveryId
+        WHERE a.userId=#{userId}
+        GROUP BY b.deliveryId
     </select>
 
     <select id="delivery">
         SELECT
-        address
-        , priceTotal
-        , detail
-        , userId
-        , cdate
-        , status
-        , deliveryId
+            deliveryId
+            , address
+            , totalAmount
+            , userId
+            , cdate
+            , status
+            , name
+            , phon
+            , request
+            , quantity
+            , tid
         FROM deliveryList
         WHERE deliveryId=#{deliveryId}
     </select>
     
-    <update id="deliveryUpdate">
+    <update id="deliveryStatusUpdate">
         UPDATE deliveryList
         SET
-            address=#{address}
-            , status=#{status}
-        WHERE deliveryId=#{deliveryId}
+            status=#{status}
+        WHERE tid=#{tid}
     </update>
 
+    <update id="deliveryRepay">
+        UPDATE deliveryList
+        SET
+            tid=#{newTid}
+        WHERE tid=#{tid}
+    </update>
+
+    <insert id="deliveryDetailSave">
+        INSERT INTO deliveryDetail
+        (
+            productId
+            , cnt
+            , img
+            , price
+            , discount
+            , productName
+            , deliveryId
+        )VALUES(
+            #{productId}
+            , #{cnt}
+            , #{img}
+            , #{price}
+            , #{discount}
+            , #{productName}
+            , #{deliveryId}
+        );
+    </insert>
+
+    <select id="deliveryDetailList" resultType="Map">
+        SELECT
+            productId
+            , cnt
+            , img
+            , price
+            , discount
+            , productName
+            , deliveryId
+        FROM deliveryDetail
+        WHERE deliveryId=#{deliveryId}
+    </select>
+
     <insert id="deliveryAddressSave">
+        <selectKey keyProperty="deliveryAddressId" order="AFTER" resultType="int">
+            SELECT lastval(sq_address);
+        </selectKey>
         INSERT INTO deliveryAddressList
         (
             userId

@@ -13,9 +13,9 @@ public interface CartMapper {
 
     int cartDelete(String userId, String productId);
 
-    int tmpCartSave(CartDto cartDto);
+    int tmpCartSave(TmpCartDto tmpCartDto);
 
-    int tmpCartDelete(String userId);
+    int tmpCartDelete(String keyData);
 
-    List<CartDto> tmpCartList(String userId);
+    List<CartDto> tmpCartList(String keyData);
 }

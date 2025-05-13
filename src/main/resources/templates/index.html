@@ -26,7 +26,7 @@
                         </picture>
                         <div th:if="${top.category == '상의'}">
                             <a th:href="${'/sell?productId='+top.productId}">
-                                <span>컴팩트 멀티 스포츠(짐웨어 러닝 워터) 여성 투인원쇼츠 (4컬러)</span>
+                                <span th:text="${top.productName}"></span>
                             </a>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                         </picture>
                         <div th:if="${top.category == '하의'}">
                             <a th:href="${'/sell?productId='+top.productId}">
-                                <span>컴팩트 멀티 스포츠(짐웨어 러닝 워터) 여성 투인원쇼츠 (4컬러)</span>
+                                <span th:text="${top.productName}"></span>
                             </a>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                         </picture>
                         <div th:if="${top.category == '신발'}">
                             <a th:href="${'/sell?productId='+top.productId}">
-                                <span>컴팩트 멀티 스포츠(짐웨어 러닝 워터) 여성 투인원쇼츠 (4컬러)</span>
+                                <span th:text="${top.productName}"></span>
                             </a>
                         </div>
                     </div>
