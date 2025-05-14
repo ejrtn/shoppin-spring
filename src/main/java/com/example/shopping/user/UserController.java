@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -13,23 +14,23 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping("userSave")
+    @PostMapping("/userSave")
     @ResponseBody
     public int userSave(UserDto userDto){
         return userService.userSave(userDto);
     }
 
-    @PostMapping("userDelete")
+    @PostMapping("/userDelete")
     public int userDelete(String userId){
         return userService.userDelete(userId);
     }
 
-    @GetMapping("login")
+    @GetMapping("/login")
     public String login(){
         return "login";
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     @ResponseBody
     public int login(HttpSession httpSession, String userId, String password){
 
@@ -38,45 +39,61 @@ public class UserController {
         return r;
     }
 
-    @PostMapping("logout")
+    @PostMapping("/logout")
     @ResponseBody
     public int logout(HttpSession httpSession){
         httpSession.removeAttribute("userId");
         return 1;
     }
 
-    @PostMapping("passwordUpdate")
+    @PostMapping("/passwordUpdate")
     public int passwordUpdate(String userId, String password, String newPassword){
         return userService.passwordUpdate(userId,password,newPassword);
     }
 
-    @PostMapping("findId")
+    @PostMapping("/findId")
     @ResponseBody
     public String findId(String name, String email){
         return userService.findId(name,email);
     }
 
-    @PostMapping("findPassword")
+    @PostMapping("/findPassword")
     @ResponseBody
     public int findPassword(String name, String email, String userId){
 
         return userService.findPassword(name,email,userId);
     }
 
-    @GetMapping("join")
+    @GetMapping("/join")
     public String join(){
         return "join";
     }
 
-    @PostMapping("idDoubleCheck")
+    @PostMapping("/idDoubleCheck")
     @ResponseBody
     public int idDoubleCheck(String userId){
         return userService.idDoubleCheck(userId);
     }
 
-    @GetMapping("idpw")
+    @GetMapping("/idpw")
     public String findIdPw(){
         return "findIdPw";
     }
 
+    @GetMapping("/userInfo")
+    public String userInfo(){
+        return "userInfo";
+    }
+
+    @PostMapping("/getUser")
+    @ResponseBody
+    public UserDto getUser(@RequestParam String userId){
+        return userService.getUser(userId);
+    }
+
+    @PostMapping("/userUpdate")
+    @ResponseBody
+    public int userUpdate(UserDto userDto){
+        return userService.userUpdate(userDto);
+    }
 }

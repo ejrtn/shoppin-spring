@@ -5,6 +5,59 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link href="/sell.css" rel="stylesheet" />
+    <style>
+        .main2{
+            width: 750px;
+            margin: 0 auto;
+        }
+        .main2 .comment-head .star-ratings {
+            color: #aaa9a9; 
+            position: relative;
+            unicode-bidi: bidi-override;
+            width: max-content;
+            -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+            -webkit-text-stroke-width: 1.3px;
+            -webkit-text-stroke-color: #2b2a29;
+        }
+        .main2 .comment-head .star-ratings-fill {
+            color: #fff58c;
+            padding: 0;
+            position: absolute;
+            z-index: 1;
+            display: flex;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            -webkit-text-fill-color: gold;
+        }
+        
+        .main2 .comment-head .star-ratings-base {
+            z-index: 0;
+            padding: 0;
+        }
+        .star-ratings-base label{
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: -50;
+            font-style: normal;
+        }
+        .main2 .comment-head{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .comment{
+            margin-bottom: 10px;
+        }
+        textarea{
+            resize: none;
+            width: 746px;
+            height: 78px;
+            border: 1px solid black;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
     <header th:replace="/header :: header"></header>
@@ -32,6 +85,34 @@
             </p>
             <button class="cartSave">장바구니</button>
             <button class="fastSell">바로구매</button>
+        </div>
+    </div>
+    <div class="main2">
+        <p>상품 리뷰</p>
+        <div class="comments">
+            <div class="comment">
+                <div class="comment-head">
+                    <span class="title">asdsadasdsad</span>
+                    <div>
+                        <label>
+                            <span>4.1</span>
+                            <span>/</span>
+                            <span>5</span>
+                        </label>
+                        <div class="star-ratings">
+                            
+                            <div class="star-ratings-fill" style="width: 10%;">
+                                
+                                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                            </div>
+                            <div class="star-ratings-base">
+                                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <textarea class="content" disabled></textarea>
+            </div>
         </div>
     </div>
 </body>

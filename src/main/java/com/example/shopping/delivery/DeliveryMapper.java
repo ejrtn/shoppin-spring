@@ -9,11 +9,11 @@ public interface DeliveryMapper {
 
     int deliverySave( DeliveryDto deliveryDto);
 
-    List<DeliveryDto> deliveryList(String userId);
+    List<DeliveryDto> deliveryList(String userId,int start);
 
     int deliveryStatusUpdate(String tid,String status);
 
-    DeliveryDto delivery(String deliveryId);
+    DeliveryDto getDelivery(String deliveryId);
 
     int deliveryDetailSave(DeliveryDetailDto deliveryDetailDto);
 

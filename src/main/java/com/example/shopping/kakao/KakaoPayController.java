@@ -49,13 +49,8 @@ public class KakaoPayController {
 
     @PostMapping("/refund") //결제취소요청
     @ResponseBody
-    public KakaoCancelResponse cancelPayRequest(){
-        return kakaoPayService.kakaoPayCancel();
+    public KakaoCancelResponse cancelPayRequest(@RequestParam String tid,@RequestParam int amount){
+        return kakaoPayService.kakaoPayCancel(tid, amount);
     }
 
-    @PostMapping("/order") //결제조회
-    @ResponseBody
-    public KakaoCancelResponse orderPayRequest(){
-        return kakaoPayService.kakaoPayCancel();
-    }
 }

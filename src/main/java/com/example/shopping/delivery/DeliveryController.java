@@ -28,8 +28,8 @@ public class DeliveryController {
 
     @PostMapping("deliveryList")
     @ResponseBody
-    public List<DeliveryDto> deliveryList(@RequestParam String userId){
-        return deliveryService.deliveryList(userId);
+    public List<DeliveryDto> deliveryList(@RequestParam String userId, @RequestParam int start){
+        return deliveryService.deliveryList(userId,start);
     }
 
     @PostMapping("deliveryStatusUpdate")
@@ -38,9 +38,10 @@ public class DeliveryController {
         return deliveryService.deliveryStatusUpdate(tid,status);
     }
 
-    @PostMapping("delivery")
-    public DeliveryDto delivery(String deliveryId){
-        return deliveryService.delivery(deliveryId);
+    @PostMapping("getDelivery")
+    @ResponseBody
+    public DeliveryDto getDelivery(@RequestParam String deliveryId){
+        return deliveryService.getDelivery(deliveryId);
     }
 
     // 스마트택배 API
@@ -101,6 +102,11 @@ public class DeliveryController {
 
         model.addAttribute("deliveryAddressId",deliveryAddressId);
         return "deliveryAddressSC";
+    }
+
+    @GetMapping("detail")
+    public String detail(@RequestParam String deliveryId){
+        return "detail";
     }
 
     @PostMapping("deliveryDetailList")

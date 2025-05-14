@@ -8,9 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.UUID;
 
 @Service
 public class UserService{
@@ -25,7 +23,6 @@ public class UserService{
     String naverId;
 
     public int userSave(UserDto userDto){
-        userDto.setPartnerUserId(UUID.randomUUID()+" "+ LocalDateTime.now().toString());
         return userMapper.userSave(userDto);
     }
 
@@ -78,5 +75,13 @@ public class UserService{
 
     public int idDoubleCheck(String userId){
         return userMapper.idDoubleCheck(userId);
+    }
+
+    public UserDto getUser(String userId) {
+        return userMapper.getUser(userId);
+    }
+
+    public int userUpdate(UserDto userDto){
+        return userMapper.userUpdate(userDto);
     }
 }

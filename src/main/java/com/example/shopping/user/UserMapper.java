@@ -23,4 +23,8 @@ public interface UserMapper {
     String findPassword(String name, String email, String userId);
 
     int idDoubleCheck(String userId);
+
+    UserDto getUser(String userId);
+
+    int userUpdate(UserDto userDto);
 }

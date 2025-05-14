@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        html,body{
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+        .main{
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            height: 100%;
+            margin: 0 auto;
+            width: 360px;
+        }
+        h1{
+            font-size: 50px;
+            font-weight: 900;
+            margin: 0px 0px 15px 0px;
+            align-self: center;
+        }
+        input{
+            font-size: 16px;
+            outline: none;
+            border: 1px solid black;
+            height: 30px;
+            padding: 0px 10px;
+        }
+        form{
+            display: flex;
+        }
+        form input{
+            flex: 1;
+        }
+        label{
+            font-size: 14px;
+            color:blue;
+            margin-bottom: 8px;
+        }
+        label.color-red{
+            color:red;
+        }
+        .gender, .result-btn{
+            display: flex;
+            height: 30px;
+        }
+        div button{
+            width: 50%;
+            cursor: pointer;
+            background-color: #ffffff;
+            outline: none;
+            border: 1px solid black;
+        }
+
+        div button.choice{
+            background-color: #8e8e8e;
+        }
+
+        #layer{
+            display:none;
+            position:fixed;
+            overflow:hidden;
+            z-index:1;
+            -webkit-overflow-scrolling:touch;
+        }
+        .address{
+            display: flex;
+            margin-bottom: 3px;
+            gap: 3px;
+        }
+        .address2{
+            margin-bottom: 8px;
+            display: flex;
+            gap: 3px;
+        }
+        #sample6_address{
+            margin-bottom: 3px;
+        }
+        #sample6_detailAddress, #sample6_extraAddress{
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h1>DEOKSU</h1>
+        <input type="text" placeholder="이름" class="name" disabled>
+        <label class="name-result"></label>
+        <input type="text" placeholder="아이디" class="id" disabled>
+        <label class="id-result"></label>
+        <form><input type="password" placeholder="패스워드" class="pw" autocomplete="no"></form>
+        <label class="pw-result">비밀번호 체크 완료 했습니다.</label>
+        <form><input type="password" placeholder="패스워드 확인" class="pwc" autocomplete="no"></form>
+        <label class="pwc-result">비밀번호 체크 완료 했습니다.</label>
+        <div class="gender">
+            <button class="man choice">남성</button>
+            <button class="woman">여성</button>
+        </div>
+        <label class="gender-result">남성 선택 했습니다</label>
+        <input type="text" placeholder="이메일" class="email">
+        <label class="email-result">이메일 입력 완료 했습니다.</label>
+        <input type="text" placeholder="핸드폰 번호(- 입력)" class="phon">
+        <label class="phon-result">핸드폰 번호 입력 완료 했습니다.</label>
+        <div class="address">
+            <input type="text" id="sample6_postcode" placeholder="우편번호" readonly>
+            <button onclick="sample6_execDaumPostcode()">우편번호 찾기</button>
+        </div>
+        <input type="text" id="sample6_address" placeholder="주소" readonly>
+        <div class="address2">
+            <input type="text" id="sample6_detailAddress" placeholder="상세주소">
+            <input type="text" id="sample6_extraAddress" placeholder="참고항목" readonly>
+        </div>
+        <label class="address-result">주소 입력 완료 했습니다.</label>
+        <input type="date" class="yyyymmdd">
+        <label class="yyyymmdd-result">생년월일 선택 완료 했습니다.</label>
+        <div class="result-btn">
+            <button class="cancel">취소</button>
+            <button class="ok">변경</button>
+        </div>
+    </div>
+</body>
+
+<script>
+    $.ajax({
+        url : '/getUser',
+        type : 'POST',
+        data : {"userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu'},
+        success : function(data){
+            document.querySelector(".name").value = data.name
+            document.querySelector(".id").value = data.userId
+            document.querySelector(".pw").value = data.password
+            document.querySelector(".pwc").value = data.password
+            data.name=="남성"?document.querySelector(".man").click():document.querySelector(".woman").click()
+            document.querySelector(".email").value = data.email
+            document.querySelector(".phon").value = data.phonNumber
+            document.querySelector("#sample6_postcode").value = data.postcode
+            document.querySelector("#sample6_address").value = data.address
+            document.querySelector("#sample6_detailAddress").value = data.detailAddress
+            document.querySelector("#sample6_extraAddress").value = data.extraAddress
+            document.querySelector(".yyyymmdd").value = data.yyyymmdd
+        },
+        error : function(error){
+            console.log(error)
+        }
+    });
+    document.querySelector(".pw").addEventListener("focusout",(e)=>{
+        if(e.target.value.length >= 7){
+            document.querySelector(".pw-result").textContent = "비밀번호 체크 완료 했습니다."
+            document.querySelector(".pw-result").classList.remove("color-red")
+        }else{
+            document.querySelector(".pw-result").textContent = "비밀번호 7자 이상 입력 해주세요."
+            document.querySelector(".pw-result").classList.add("color-red")
+        }
+    })
+
+    document.querySelector(".pwc").addEventListener("focusout",(e)=>{
+        if(e.target.value == document.querySelector(".pw").value){
+            document.querySelector(".pwc-result").textContent = "비밀번호 체크 완료 했습니다."
+            document.querySelector(".pwc-result").classList.remove("color-red")
+        }else{
+            document.querySelector(".pwc-result").textContent = "비밀번호가 동일하지 않습니다."
+            document.querySelector(".pwc-result").classList.add("color-red")
+        }
+    })
+
+    document.querySelector(".man").addEventListener("click",(e)=>{
+        document.querySelector(".woman").classList.remove("choice")
+        e.target.classList.add("choice")
+        document.querySelector(".gender-result").textContent = "남성 선택 했습니다."
+    })
+
+    document.querySelector(".woman").addEventListener("click",(e)=>{
+        document.querySelector(".man").classList.remove("choice")
+        e.target.classList.add("choice")
+        document.querySelector(".gender-result").textContent = "여성 선택 했습니다."
+    })
+
+    document.querySelector(".email").addEventListener("focusout",(e)=>{
+        const pattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
+        if(pattern.test(e.target.value)){
+            document.querySelector(".email-result").textContent = "이메일 입력 완료 했습니다."
+            document.querySelector(".email-result").classList.remove("color-red")
+        }else{
+            document.querySelector(".email-result").textContent = "이메일 형식에 맞춰서 입력 했습니다."
+            document.querySelector(".email-result").classList.add("color-red")
+        }
+    })
+
+    document.querySelector(".phon").addEventListener("focusout",(e)=>{
+        const pattern = /^01[016789]-\d{3,4}-\d{4}$/;
+        if(pattern.test(e.target.value)){
+            document.querySelector(".phon-result").textContent = "핸드폰 번호 입력 완료 했습니다."
+            document.querySelector(".phon-result").classList.remove("color-red")
+        }else{
+            document.querySelector(".phon-result").textContent = "핸드폰 번호 형식에 맞춰서 입력 했습니다."
+            document.querySelector(".phon-result").classList.add("color-red")
+        }
+    })
+
+    function sample6_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("sample6_extraAddress").value = extraAddr;
+                
+                } else {
+                    document.getElementById("sample6_extraAddress").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('sample6_postcode').value = data.zonecode;
+                document.getElementById("sample6_address").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("sample6_detailAddress").focus();
+
+                document.querySelector(".address-result").classList.remove("color-red")
+                document.querySelector(".address-result").textContent = '주소 입력 완료 했습니다.'
+            }
+        }).open();
+    }
+
+    document.querySelector(".yyyymmdd").addEventListener("change",()=>{
+        document.querySelector(".yyyymmdd-result").classList.remove("color-red")
+        document.querySelector(".yyyymmdd-result").textContent = '생년월일 선택 완료 했습니다.'
+    })
+
+
+    document.querySelector(".cancel").addEventListener("click",()=>{location.href='/'})
+    document.querySelector(".ok").addEventListener("click",()=>{
+        if(check()){
+            $.ajax({
+                url : '/userUpdate',
+                type : 'POST',
+                data : {
+                    "name":document.querySelector(".name").value,
+                    "userId":document.querySelector(".id").value,
+                    "password":document.querySelector(".pw").value,
+                    "gender":document.querySelector(".gender-result").textContent.includes("남성")?"남성":"여성",
+                    "email":document.querySelector(".email").value,
+                    "phonNumber":document.querySelector(".phon").value,
+                    "postcode":document.querySelector("#sample6_postcode").value,
+                    "address":document.querySelector("#sample6_address").value,
+                    "detailAddress":document.querySelector("#sample6_detailAddress").value,
+                    "extraAddress":document.querySelector("#sample6_extraAddress").value,
+                    "yyyymmdd":document.querySelector(".yyyymmdd").value
+                },
+                success : function(data){
+                    if(data != 1){
+                        alert("회원 정보를 변경 하는데 실패했습니다.")
+                    }else{
+                        location.href = '/'
+                    }
+                },
+                error : function(error){
+                    console.log(error)
+                }
+            });
+        }
+    })
+
+    function check(){
+        let el = document.querySelectorAll("label")
+        for(let i=0;i<el.length;i++){
+            if(el[i].classList.contains("color-red")){
+                alert(el[i].textContent)
+                return false
+            }
+        }
+        return true
+    }
+
+
+
+    
+</script>
+</html>

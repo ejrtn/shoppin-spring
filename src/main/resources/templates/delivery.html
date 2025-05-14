@@ -6,7 +6,11 @@
     <style>
         .main{
             display: flex;
-            justify-content: center;
+            flex-flow: column;
+            align-items: center;
+        }
+        .main table{
+            width: 770px;
         }
         .main table thead th:nth-child(1){
             width: 270px;
@@ -23,6 +27,7 @@
         .main table tbody td,
         .main table thead th{
             border-bottom: 1px solid black;
+            text-align: center;
         }
         .main table tbody td:nth-child(2),
         .main table tbody td:nth-child(3),
@@ -38,8 +43,37 @@
             flex-flow: column;
         }
         .main table tbody .tracking,
-        .main table tbody .pay{
+        .main table tbody .pay,
+        .main table tbody .detail-open,
+        .main table tbody .delivery-cancel{
             cursor: pointer;
+        }
+        .main .search{
+            width: 95px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .main input{
+            box-sizing: border-box;
+            height: 36px;
+            width: 95px;
+            border: none;
+            padding: 0px 20px 0px 5px;
+            border-radius: 5px;
+            margin: 0 auto;
+        }
+        .main svg{
+            position: absolute;
+            cursor: pointer;
+            right: 0px;
+            top: 9px;
+        }
+        .main .add{
+            text-align: center;
+            cursor: pointer;
+        }
+        .main .add.hidden{
+            display: none;
         }
     </style>
 </head>
@@ -53,60 +87,80 @@
                     <th>받는사람</th>
                     <th>주문날짜</th>
                     <th>상태</th>
+                    <th>기타</th>
                 </tr>
             </thead>
             <tbody>
 
             </tbody>
         </table>
+        <span class="add hidden">더보기</span>
     </div>
+    
 </body>
 <script>
     let list
-    $.ajax({
-        url : '/deliveryList',
-        type : 'POST',
-        data : {"userId":"deoksu"},
-        success : function(data){
-            list = data;
-            for(let i=0;i<data.length;i++){
-                let t = ''
-                t += '<tr>'
-                t +=    '<td>'
-                t +=        '<div class="detail">'   
-                t +=            '<span>제품 종류 : '+data[i].kindCnt+'개 </span>'
-                t +=            '<span>총 수량 : '+data[i].quantity+'개 </span>'
-                t +=            '<span>총 비용 : '+data[i].totalAmount+'원</span>'
-                t +=        '</div>'
-                t +=    '</td>'
-                t +=    '<td>'
-                t +=        '<span>'+data[i].name+'</span>'
-                t +=    '</td>'
-                t +=    '<td>'
-                t +=        '<span>'+data[i].cdate+'</span>'
-                t +=    '</td>'
-                t +=    '<td>'
-                t +=        '<span>'+data[i].status+'</span>'
-                if(data[i].status == '배송중'){
-                    t +=    '<p class="tracking">배송조회</p>'
-                }else if(data[i].status == "미결제"){
-                    t +=    '<p class="pay">결제하기</p>'
+    let start = 0;
+    deliveryList();
+    function deliveryList(){
+        $.ajax({
+            url : '/deliveryList',
+            type : 'POST',
+            data : {
+                "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu',
+                "start":start
+            },
+            success : function(data){
+                list = data;
+                for(let i=0;i<(data.length>10?10:data.length);i++){
+                    let t = ''
+                    t += '<tr>'
                     t += '<input type="hidden" value="'+i+'" class="idx">'
-                }
-                t +=    '</td>'
+                    t +=    '<td>'
+                    t +=        '<div class="detail">'   
+                    t +=            '<span>제품 종류 : '+data[i].kindCnt+'개 </span>'
+                    t +=            '<span>총 수량 : '+data[i].quantity+'개 </span>'
+                    t +=            '<span>총 비용 : '+data[i].totalAmount+'원</span>'
+                    t +=        '</div>'
+                    t +=    '</td>'
+                    t +=    '<td>'
+                    t +=        '<span>'+data[i].name+'</span>'
+                    t +=    '</td>'
+                    t +=    '<td>'
+                    t +=        '<span>'+data[i].cdate+'</span>'
+                    t +=    '</td>'
+                    t +=    '<td>'
+                    t +=        '<span>'+data[i].status+'</span>'
+                    if(data[i].status == '배송중'){
+                        t +=    '<div class="search">'
+                        t +=        '<input type="text" placeholder="운송장 번호">'
+                        t +=        '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8.5" cy="8.5" r="5.5" stroke="#8A8A8A"></circle><path d="M12.5 12.5L17 17" stroke="#8A8A8A"></path></svg>'
+                        t +=    '</div>'
+                    }else if(data[i].status == "미결제"){
+                        t +=    '<p class="pay">결제하기</p>'
+                    }
+                    t +=    '</td>'
+                    t +=    '<td>'
+                    t +=        '<p class="detail-open">상세보기</p>'
+                    if(data[i].status == '결제완료'){
+                        t +=        '<p class="delivery-cancel">주문취소</p>'
+                    }
+                    t +=    '</td>'
 
-                document.querySelector("tbody").innerHTML += t
+                    document.querySelector("tbody").innerHTML += t
+                }
+                if(data.length>10) document.querySelector(".add").classList.remove("hidden")
+            },
+            error : function(error){
+                console.log(error)
             }
-        },
-        error : function(error){
-            console.log(error)
-        }
-    });
+        });
+    }
 
     document.querySelector("tbody").addEventListener("click",(e)=>{
         if(e.target.className=="pay"){
             let deliveryDetailDtos;
-            let idx = e.target.nextElementSibling.value
+            let idx = e.target.parentNode.parentNode.querySelector(".idx").value
             $.ajax({
                 url : '/deliveryDetailList',
                 type : 'POST',
@@ -141,9 +195,31 @@
                     console.log(error)
                 }
             });
+        }else if(e.target.className == 'delivery-cancel'){
+            let idx = e.target.parentNode.parentNode.querySelector(".idx").value
+            $.ajax({
+                url : '/kakaoPayment/refund',
+                type : 'POST',
+                data:{
+                    "tid":list[idx].tid,
+                    "amount":list[idx].totalAmount
+                },
+                success : function(data){
+                    console.log(data)
+                },
+                error : function(error){
+                    console.log(error)
+                }
+            });
+        }else if("detail-open"){
+            let idx = e.target.parentNode.parentNode.querySelector(".idx").value
+            location.href = "/detail?deliveryId="+list[idx].deliveryId
         }
-        
-        
+    })
+
+    document.querySelector(".add").addEventListener("click",(e)=>{
+        start += 10
+        deliveryList()
     })
 </script>
 </html>

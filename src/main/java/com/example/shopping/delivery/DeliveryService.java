@@ -26,8 +26,8 @@ public class DeliveryService {
         return result;
     }
 
-    public List<DeliveryDto> deliveryList(String userId){
-        return deliveryMapper.deliveryList(userId);
+    public List<DeliveryDto> deliveryList(String userId,int start){
+        return deliveryMapper.deliveryList(userId,start);
     }
 
     public int deliveryStatusUpdate(String tid,String status){
@@ -37,8 +37,8 @@ public class DeliveryService {
         return deliveryMapper.deliveryRepay(tid,newTid);
     }
 
-    public DeliveryDto delivery(String deliveryId){
-        return deliveryMapper.delivery(deliveryId);
+    public DeliveryDto getDelivery(String deliveryId){
+        return deliveryMapper.getDelivery(deliveryId);
     }
 
     // 스마트택배 API
@@ -48,7 +48,7 @@ public class DeliveryService {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("https://info.sweettracker.co.kr/api/v1/companylist?t_key=pwdhGbqe5vbLNd9WE9TuyA"))
+                    .uri(new URI("https://info.sweettracker.co.kr/api/v1/companylist?t_key=vwJzrg9wK1IFaVl53qmJPA"))
                     .build();
 
             // Send the request and get the response
@@ -68,7 +68,7 @@ public class DeliveryService {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("https://info.sweettracker.co.kr/api/v1/trackingInfo?t_key=pwdhGbqe5vbLNd9WE9TuyA&t_invoice="+trackNumber+"&t_code="+courierCode))
+                    .uri(new URI("https://info.sweettracker.co.kr/api/v1/trackingInfo?t_key=vwJzrg9wK1IFaVl53qmJPA&t_invoice="+trackNumber+"&t_code="+courierCode))
                     .build();
 
             // Send the request and get the response

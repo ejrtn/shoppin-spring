@@ -147,7 +147,7 @@
     $.ajax({
         url : '/deliveryAddressList',
         type : 'POST',
-        data : {"userId":"deoksu"},
+        data : {"userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu'},
         success : function(data){
             for(let i=0;i<data.length;i++){
                 let t = ''

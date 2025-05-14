@@ -101,12 +101,12 @@ public class KakaoPayService {
         return approveResponse;
     }
 
-    public KakaoCancelResponse kakaoPayCancel(){
+    public KakaoCancelResponse kakaoPayCancel(String tid,int amount){
 
         KakaoCancleReqDto kakaoCancleReqDto = new KakaoCancleReqDto();
         kakaoCancleReqDto.setCid(cid);
         kakaoCancleReqDto.setTid(tid);
-        kakaoCancleReqDto.setCancel_amount(1000);
+        kakaoCancleReqDto.setCancel_amount(amount);
         kakaoCancleReqDto.setCancel_tax_free_amount(0);
 
         HttpEntity<KakaoCancleReqDto> requestEntity = new HttpEntity<>(kakaoCancleReqDto, this.getHeaders());
@@ -120,6 +120,8 @@ public class KakaoPayService {
                 KakaoCancelResponse.class
         );
 
+        deliveryService.deliveryStatusUpdate(tid,"결제취소");
+        
         return cancelResponse;
     }
 

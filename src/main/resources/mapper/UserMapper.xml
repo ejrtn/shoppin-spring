@@ -85,4 +85,39 @@
         FROM user
         WHERE userId=#{userId}
     </select>
+
+    <select id="getUser">
+        SELECT
+            name
+            , userId
+            , address
+            , phonNumber
+            , gender
+            , password
+            , yyyymmdd
+            , email
+            , deleteYn
+            , postcode
+            , detailAddress
+            , extraAddress
+            , partnerUserId
+        FROM user
+        WHERE userId=#{userId}
+    </select>
+
+    <update id="userUpdate">
+        UPDATE user
+        SET
+            address=#{address}
+            ,phonNumber=#{phonNumber}
+            ,gender=#{gender}
+            ,password=#{password}
+            ,yyyymmdd=#{yyyymmdd}
+            ,email=#{email}
+            ,deleteYn=#{deleteYn}
+            ,postcode=#{postcode}
+            ,detailAddress=#{detailAddress}
+            ,extraAddress=#{extraAddress}
+        WHERE userId=#{userId}
+    </update>
 </mapper>

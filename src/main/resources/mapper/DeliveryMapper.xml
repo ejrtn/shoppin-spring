@@ -51,15 +51,16 @@
         ON a.deliveryId = b.deliveryId
         WHERE a.userId=#{userId}
         GROUP BY b.deliveryId
+        LIMIT #{start},11
     </select>
 
-    <select id="delivery">
+    <select id="getDelivery">
         SELECT
             deliveryId
             , address
             , totalAmount
             , userId
-            , cdate
+            , DATE_FORMAT(cdate,'%Y-%m-%d %H:%i:%s') cdate
             , status
             , name
             , phon

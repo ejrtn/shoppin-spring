@@ -42,7 +42,7 @@
         </div>
         <input type="hidden" th:value="${session.userId}" id="userId">
         <h3 class="my" th:if="${session.userId}" onclick="logout()">로그아웃</h3>
-        <h3 class="my" th:if="${session.userId}" onclick="location.href='#'">내정보</h3>
+        <h3 class="my" th:if="${session.userId}" onclick="location.href='/userInfo'">내정보</h3>
         <h3 class="my" th:if="${session.userId}" onclick="location.href='/cart'">장바구니</h3>
         <h3 class="my" th:if="${session.userId}" onclick="location.href='/delivery'">주문목록</h3>
         <h3 class="my" th:if="${session.userId==null}" onclick="location.href='/login'" hidden>로그인</h3>
