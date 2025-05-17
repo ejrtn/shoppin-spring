@@ -24,6 +24,9 @@
         .main table thead th:nth-child(4){
             width: 100px;
         }
+        .main table thead th:nth-child(5){
+            width: 100px;
+        }
         .main table tbody td,
         .main table thead th{
             border-bottom: 1px solid black;
@@ -47,26 +50,13 @@
         .main table tbody .detail-open,
         .main table tbody .delivery-cancel{
             cursor: pointer;
-        }
-        .main .search{
-            width: 95px;
-            box-sizing: border-box;
-            position: relative;
-        }
-        .main input{
-            box-sizing: border-box;
-            height: 36px;
-            width: 95px;
-            border: none;
-            padding: 0px 20px 0px 5px;
+            background-color: #dfdede;
             border-radius: 5px;
+            padding: 2px 5px;
+            width: 50px;
             margin: 0 auto;
-        }
-        .main svg{
-            position: absolute;
-            cursor: pointer;
-            right: 0px;
-            top: 9px;
+            font-size: 13px;
+            margin-top: 2px;
         }
         .main .add{
             text-align: center;
@@ -96,7 +86,17 @@
         </table>
         <span class="add hidden">더보기</span>
     </div>
-    
+    <form action="/courier" method="post" style="display:none;" target="popForm">
+        <div class="form-group">
+          <label for="t_name">택배사 코드</label>
+          <input type="text" class="form-control" name="t_name" id="t_name" placeholder="택배사 이름">
+        </div>
+        <div class="form-group">
+          <label for="t_invoice">운송장 번호</label>
+          <input type="text" class="form-control" name="t_invoice" id="t_invoice" placeholder="운송장 번호">
+        </div>
+        <button type="submit" class="courier-btn">조회하기</button>
+    </form>
 </body>
 <script>
     let list
@@ -132,19 +132,15 @@
                     t +=    '<td>'
                     t +=        '<span>'+data[i].status+'</span>'
                     if(data[i].status == '배송중'){
-                        t +=    '<div class="search">'
-                        t +=        '<input type="text" placeholder="운송장 번호">'
-                        t +=        '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8.5" cy="8.5" r="5.5" stroke="#8A8A8A"></circle><path d="M12.5 12.5L17 17" stroke="#8A8A8A"></path></svg>'
-                        t +=    '</div>'
+                        t +=    '<p class="tracking">배송조회</p>'
                     }else if(data[i].status == "미결제"){
                         t +=    '<p class="pay">결제하기</p>'
+                    }else if(data[i].status == '결제완료'){
+                        t +=    '<p class="delivery-cancel">주문취소</p>'
                     }
                     t +=    '</td>'
                     t +=    '<td>'
                     t +=        '<p class="detail-open">상세보기</p>'
-                    if(data[i].status == '결제완료'){
-                        t +=        '<p class="delivery-cancel">주문취소</p>'
-                    }
                     t +=    '</td>'
 
                     document.querySelector("tbody").innerHTML += t
@@ -211,9 +207,15 @@
                     console.log(error)
                 }
             });
-        }else if("detail-open"){
+        }else if(e.target.className=="detail-open"){
             let idx = e.target.parentNode.parentNode.querySelector(".idx").value
             location.href = "/detail?deliveryId="+list[idx].deliveryId
+        }else if(e.target.className=="tracking"){
+            window.open("" ,"popForm",'width=450,height=914');
+            let idx = e.target.parentNode.parentNode.querySelector(".idx").value
+            document.querySelector("#t_name").value = list[idx].companyName
+            document.querySelector("#t_invoice").value = list[idx].trackingCode
+            document.querySelector(".courier-btn").click()
         }
     })
 
@@ -221,5 +223,6 @@
         start += 10
         deliveryList()
     })
+
 </script>
 </html>

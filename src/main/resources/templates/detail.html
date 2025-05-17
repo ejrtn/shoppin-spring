@@ -205,6 +205,7 @@
             <p><span>총 구매 금액</span><span class="total-buy-money">0</span><span>원</span></p>
         </div>
     </div>
+
 </body>
 <script>
     $.ajax({
@@ -242,7 +243,7 @@
                 t +=    '<td>'
                 t +=        data[i].productName
                 t +=        '<span class="price"><em class="discount">'+(data[i].discount==0 ? '' : data[i].discount+'%')+'</em><em>'+data[i].price+'</em></span>'
-                
+                t +=        '<button>리뷰작성</button>'
                 t +=    '</td>'
                 t +=    '<td>'
                 t +=        '<div class="size-cnt">'
@@ -311,5 +312,6 @@
         currentTarget.querySelector(".total-cnt").textContent = "총 "+total_num + '개'
         currentTarget.querySelector(".total-money .money").textContent = (total_num * parseInt(money * ((100-parseInt(discount))*0.01))) + '원'
     }
+
 </script>
 </html>

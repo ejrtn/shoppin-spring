@@ -3,11 +3,11 @@ package com.example.shopping.delivery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 
 @Controller
@@ -15,6 +15,9 @@ public class DeliveryController {
 
     @Autowired
     DeliveryService deliveryService;
+
+    @Autowired
+    CourierCompanyService courierCompanyService;
 
     @GetMapping("delivery")
     public String delivery(){
@@ -48,12 +51,13 @@ public class DeliveryController {
     // https://tracking.sweettracker.co.kr:8443/templates/app.html#/
     @PostMapping("courierCompanyList")
     public String courierCompanyList() {
-        return deliveryService.courierCompanyList();
+        return courierCompanyService.courierCompanyList();
     }
 
-    @PostMapping("searchWaybill")
-    public String searchWaybill(String date,String trackNumber,String courierCode){
-        return deliveryService.searchWaybill(date,trackNumber,courierCode);
+    @PostMapping("/searchWaybill")
+    @ResponseBody
+    public String searchWaybill(String trackNumber, String companyName) throws UnsupportedEncodingException {
+        return courierCompanyService.searchWaybill(trackNumber,companyName);
     }
 
     @PostMapping("deliveryAddressSave")
@@ -113,5 +117,12 @@ public class DeliveryController {
     @ResponseBody
     public List<DeliveryDetailDto> deliveryDetailList(@RequestParam String deliveryId){
         return deliveryService.deliveryDetailList(deliveryId);
+    }
+
+    @PostMapping("/courier")
+    public String courier(Model model, @RequestParam String t_invoice, @RequestParam String t_name){
+        model.addAttribute("trackNumber",t_invoice);
+        model.addAttribute("companyName",t_name);
+        return "courier";
     }
 }

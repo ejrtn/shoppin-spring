@@ -45,6 +45,8 @@
             , a.request
             , a.quantity
             , a.tid
+            , a.trackingCode
+            , a.companyName
             , count(*) as kindCnt
         FROM deliveryList a
         INNER JOIN deliveryDetail b

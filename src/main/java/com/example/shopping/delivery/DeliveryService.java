@@ -1,7 +1,13 @@
 package com.example.shopping.delivery;
 
+import com.example.shopping.kakao.KakaoCancelResponse;
+import com.example.shopping.kakao.KakaoCancleReqDto;
+import lombok.Data;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -39,49 +45,6 @@ public class DeliveryService {
 
     public DeliveryDto getDelivery(String deliveryId){
         return deliveryMapper.getDelivery(deliveryId);
-    }
-
-    // 스마트택배 API
-    // https://tracking.sweettracker.co.kr:8443/templates/app.html#/
-    public String courierCompanyList() {
-
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("https://info.sweettracker.co.kr/api/v1/companylist?t_key=vwJzrg9wK1IFaVl53qmJPA"))
-                    .build();
-
-            // Send the request and get the response
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            // Print the response code and content
-            System.out.println("Response Code: " + response.statusCode());
-            System.out.println("Response Body: " + response.body());
-            return response.body();
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            return e.getMessage();
-        }
-    }
-
-    public String searchWaybill(String date,String trackNumber,String courierCode){
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("https://info.sweettracker.co.kr/api/v1/trackingInfo?t_key=vwJzrg9wK1IFaVl53qmJPA&t_invoice="+trackNumber+"&t_code="+courierCode))
-                    .build();
-
-            // Send the request and get the response
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            // Print the response code and content
-            System.out.println("Response Code: " + response.statusCode());
-            System.out.println("Response Body: " + response.body());
-            return response.body();
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            return e.getMessage();
-        }
     }
 
     public int deliveryAddressSave(DeliveryAddressListDto deliveryAddressListDto) {
