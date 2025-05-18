@@ -181,6 +181,7 @@ i {
     padding: 16px 52px;
     font-size: 13px;
     color: #212121;
+    position: relative;
 }
 
 .tracking-status-item-list :first-child > .location-text {

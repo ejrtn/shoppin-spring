@@ -118,7 +118,7 @@
 </div>
 
 <script>
-    // let data = {"adUrl":null,"complete":true,"invoiceNo":"91198159824","itemImage":null,"itemName":"","level":6,"receiverAddr":"","receiverName":"","recipient":"","result":"Y","senderName":"","trackingDetails":[{"kind":"터미널입고","level":3,"manName":"","manPic":"","telno":"","telno2":"","time":1735560282000,"timeString":"2024-12-30 21:04:42","where":"이천센터","code":null,"remark":null},{"kind":"터미널출고","level":3,"manName":"","manPic":"","telno":"","telno2":"","time":1735560602000,"timeString":"2024-12-30 21:10:02","where":"이천센터","code":null,"remark":null},{"kind":"배송입고","level":4,"manName":"","manPic":"","telno":"","telno2":"","time":1735592864000,"timeString":"2024-12-31 06:07:44","where":"서성북","code":null,"remark":null},{"kind":"배송출고(16시~18시)","level":5,"manName":"","manPic":"","telno":"","telno2":"","time":1735592934000,"timeString":"2024-12-31 06:08:54","where":"서성북","code":null,"remark":null},{"kind":"배송완료","level":6,"manName":"","manPic":"","telno":"","telno2":"","time":1735618216000,"timeString":"2024-12-31 13:10:16","where":"서성북","code":null,"remark":null}],"orderNumber":null,"estimate":"16시~18시","productInfo":null,"zipCode":null,"lastDetail":{"kind":"배송완료","level":6,"manName":"","manPic":"","telno":"","telno2":"","time":1735618216000,"timeString":"2024-12-31 13:10:16","where":"서성북","code":null,"remark":null},"lastStateDetail":{"kind":"배송완료","level":6,"manName":"","manPic":"","telno":"","telno2":"","time":1735618216000,"timeString":"2024-12-31 13:10:16","where":"서성북","code":null,"remark":null},"firstDetail":{"kind":"터미널입고","level":3,"manName":"","manPic":"","telno":"","telno2":"","time":1735560282000,"timeString":"2024-12-30 21:04:42","where":"이천센터","code":null,"remark":null},"completeYN":"Y"}
+    let tmp_data = '{"adUrl":null,"complete":true,"invoiceNo":"91198159824","itemImage":null,"itemName":"","level":6,"receiverAddr":"","receiverName":"","recipient":"","result":"Y","senderName":"","trackingDetails":[{"kind":"터미널입고","level":3,"manName":"","manPic":"","telno":"","telno2":"","time":1735560282000,"timeString":"2024-12-30 21:04:42","where":"이천센터","code":null,"remark":null},{"kind":"터미널출고","level":3,"manName":"","manPic":"","telno":"","telno2":"","time":1735560602000,"timeString":"2024-12-30 21:10:02","where":"이천센터","code":null,"remark":null},{"kind":"배송입고","level":4,"manName":"","manPic":"","telno":"","telno2":"","time":1735592864000,"timeString":"2024-12-31 06:07:44","where":"서성북","code":null,"remark":null},{"kind":"배송출고(16시~18시)","level":5,"manName":"","manPic":"","telno":"","telno2":"","time":1735592934000,"timeString":"2024-12-31 06:08:54","where":"서성북","code":null,"remark":null},{"kind":"배송완료","level":6,"manName":"","manPic":"","telno":"","telno2":"","time":1735618216000,"timeString":"2024-12-31 13:10:16","where":"서성북","code":null,"remark":null}],"orderNumber":null,"estimate":"16시~18시","productInfo":null,"zipCode":null,"lastDetail":{"kind":"배송완료","level":6,"manName":"","manPic":"","telno":"","telno2":"","time":1735618216000,"timeString":"2024-12-31 13:10:16","where":"서성북","code":null,"remark":null},"lastStateDetail":{"kind":"배송완료","level":6,"manName":"","manPic":"","telno":"","telno2":"","time":1735618216000,"timeString":"2024-12-31 13:10:16","where":"서성북","code":null,"remark":null},"firstDetail":{"kind":"터미널입고","level":3,"manName":"","manPic":"","telno":"","telno2":"","time":1735560282000,"timeString":"2024-12-30 21:04:42","where":"이천센터","code":null,"remark":null},"completeYN":"Y"}'
     // console.log(data)
     // const lineEl = document.querySelectorAll(".vertical-line");
     // let topNumber = 110
@@ -143,9 +143,11 @@
         },
         success : function(data){
             
-            data = JSON.parse(data)
+            data = JSON.parse(tmp_data)
             let t = ''
             if(data.trackingDetails != null){
+                data = data.trackingDetails
+                console.log(data)
                 for(let i=data.length-1;i>-1;i--){
                     
                     t += '<div class="tracking-status-item">'
@@ -153,9 +155,9 @@
                     t +=     '<span class="location-text">'+data[i].where+'</span> | <span class="status-text">'+data[i].kind+'</span>'
                     t +=     '<div class="time-text">'+data[i].timeString+'</div>'
                     if(data.length-1-i == 0){
-                        t +=     '<div class="vertical-line" style="top:'+((data.length-1-i)*36)+'px; display:none;"></div>'
+                        t +=     '<div class="vertical-line" style="top:-40px; display:none;"></div>'
                     }else{
-                        t +=     '<div class="vertical-line" style="top:'+((data.length-1-i)*36)+'px"></div>'
+                        t +=     '<div class="vertical-line" style="top:-40px"></div>'
                     }
                     t += '</div>'
                 }

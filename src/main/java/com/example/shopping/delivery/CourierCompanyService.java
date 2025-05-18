@@ -77,15 +77,7 @@ public class CourierCompanyService {
 
             JSONObject rjson = new JSONObject(response.getBody());
 
-            System.out.println(rjson);
-//            System.out.println(rjson.getJSONArray("code"));
             return rjson.toString();
-//            if(rjson.getJSONArray("code").equals("105")){
-//                System.out.println(rjson.getJSONArray("msg").toString());
-//                return rjson.toString();
-//            }
-//            JSONArray company = rjson.getJSONArray("trackingDetails");
-//            return company.toString();
         }catch (Exception e){
             return e.getMessage();
         }
