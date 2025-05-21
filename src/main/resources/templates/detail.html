@@ -90,6 +90,7 @@
         }
         .main table tbody td:nth-child(2){
             align-content: baseline;
+            position: relative;
         }
         .main table tbody td:nth-child(3){
             display: flex;
@@ -169,7 +170,30 @@
             color: white;
             border-radius: 5px;
         }
-
+        .main .comment-btn{
+            cursor: pointer;
+            background-color: #e4e4e4;
+            outline: none;
+            border: 1px solid #c0c0c0;
+            font-size: 10px;
+            position: absolute;
+            bottom: 8px;
+            right: 13px;
+        }
+        .main .comment-head{
+            display: flex;
+            justify-content: space-between;
+            width: 476px;
+            margin-bottom: 1px;
+        }
+        .main .comment-head .comment-rating{
+            width: 73px;
+        }
+        .main .content{
+            resize: none;
+            height: 47px;
+            width: 470px;
+        }
 
     </style>
 </head>
@@ -205,97 +229,150 @@
             <p><span>총 구매 금액</span><span class="total-buy-money">0</span><span>원</span></p>
         </div>
     </div>
-
 </body>
 <script>
     $.ajax({
         url : '/getDelivery',
         type : 'POST',
         data : {"deliveryId":location.href.split("?deliveryId=")[1]},
-        success : function(data){
-            console.log(data)
-            document.querySelector(".delivery-info .name").textContent = data.name
-            document.querySelector(".delivery-info .phon").textContent = data.phon
-            document.querySelector(".delivery-info .address").textContent = data.address
-            document.querySelector(".delivery-info .request").value = data.request
-        },
-        error : function(error){
-            console.log(error)
-        }
-    });
-
-    $.ajax({
-        url : '/deliveryDetailList',
-        type : 'POST',
-        data : {"deliveryId":location.href.split("?deliveryId=")[1]},
-        success : function(data){
-            for(let i=0;i<data.length;i++){
-                data.cnt = JSON.parse(data[i].cnt)
-                let c_total = {}
-                let t = ""
-                t += '<tr>'
-                t +=    '<td>'
-                t +=        '<picture>'
-                t +=            '<source srcset="/imgLoad?img='+data[i].img+'" type="image/webp" />'
-                t +=            '<img src="/imgLoad?img='+data[i].img+'" />'
-                t +=        '</picture>'
-                t +=    '</td>'
-                t +=    '<td>'
-                t +=        data[i].productName
-                t +=        '<span class="price"><em class="discount">'+(data[i].discount==0 ? '' : data[i].discount+'%')+'</em><em>'+data[i].price+'</em></span>'
-                t +=        '<button>리뷰작성</button>'
-                t +=    '</td>'
-                t +=    '<td>'
-                t +=        '<div class="size-cnt">'
-                for(let color in data.cnt){
-                    for(let size in data.cnt[color]){
-                        if(data.cnt[color][size] > 0){
-                        t += '<div class="size-cnt-one">'
-                        t +=     '<div class="color-'+color+'" style="background-color:#'+color+';' +
-                                    'border-color:#'+(parseInt(color)>7631988?"000000":'ffffff')+';' +
-                                    'color:#'+(parseInt(color)<7631988?"ffffff":'000000')+';"></div>'
-                        t +=     '<label class="size">'+size+'</label>'
-                        t +=     '<label class="cnt">'
-                        t +=         '<span class="num">'+data.cnt[color][size]+'개</span>'
-                        t +=      '</label>'
-                        t +=      '<label class="money">'+(parseInt(data[i].price * ((100-parseInt(data[i].discount))*0.01))*parseInt(data.cnt[color][size]))+'원</label>'
-                        t += '</div>'
+        success : function(deliveryInfo){
+            document.querySelector(".delivery-info .name").textContent = deliveryInfo.name
+            document.querySelector(".delivery-info .phon").textContent = deliveryInfo.phon
+            document.querySelector(".delivery-info .address").textContent = deliveryInfo.address
+            document.querySelector(".delivery-info .request").value = deliveryInfo.request
+            
+            $.ajax({
+                url : '/deliveryDetailCommentsList',
+                type : 'POST',
+                data : {
+                    "deliveryId":location.href.split("?deliveryId=")[1],
+                    "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu'
+                },
+                success : function(data){
+                    for(let i=0;i<data.length;i++){
+                        data.cnt = JSON.parse(data[i].cnt)
+                        
+                        let c_total = {}
+                        let t = ""
+                        t += '<tr>'
+                        t +=    '<td>'
+                        t +=        '<input type="hidden" value="'+data[i].productId+'" class="productId">'
+                        t +=        '<picture>'
+                        t +=            '<source srcset="/imgLoad?img='+data[i].img+'" type="image/webp" />'
+                        t +=            '<img src="/imgLoad?img='+data[i].img+'" />'
+                        t +=        '</picture>'
+                        t +=    '</td>'
+                        t +=    '<td>'
+                        t +=        data[i].productName
+                        t +=        '<span class="price"><em class="discount">'+(data[i].discount==0 ? '' : data[i].discount+'%')+'</em><em>'+data[i].price+'</em></span>'
+                        
+                        if(deliveryInfo.status == '결제완료'){
+                            t +=        '<button class="comment-btn" value='+(data[i].commentId==null?'':data[i].commentId)+'>'+(data[i].content==null?'리뷰저장':'리뷰수정')+'</button>'
+                            t +=        '<div class="comment-head">'
+                            t +=            '<input type="text" class="comment-title" placeholder="제목" value="'+(data[i].title==null?'':data[i].title)+'">'
+                            t +=            '<input type="text" class="comment-rating" placeholder="평점 0.0~5.0" value="'+(data[i].rating==null?'':data[i].rating)+'">'
+                            t +=        '</div>'
+                            t +=        '<textarea class="content" maxlength="100" placeholder="해당 제품 리뷰 작성(제한 100자)">'+(data[i].content==null?'':data[i].content)+'</textarea>'
                         }
-                    }
-                }
-                t +=        '</div>'
-                t +=        '<p class="total-money"><span class="total-cnt">총 0개</span><span class="money">0원</span></p>'
-                t +=    '</td>'
-                t += '</tr>'
-                document.querySelector("tbody").innerHTML += t;
+                        t +=    '</td>'
+                        t +=    '<td>'
+                        t +=        '<div class="size-cnt">'
+                        for(let color in data.cnt){
+                            for(let size in data.cnt[color]){
+                                if(data.cnt[color][size] > 0){
+                                t += '<div class="size-cnt-one">'
+                                t +=     '<div class="color-'+color+'" style="background-color:#'+color+';' +
+                                            'border-color:#'+(parseInt(color)>7631988?"000000":'ffffff')+';' +
+                                            'color:#'+(parseInt(color)<7631988?"ffffff":'000000')+';"></div>'
+                                t +=     '<label class="size">'+size+'</label>'
+                                t +=     '<label class="cnt">'
+                                t +=         '<span class="num">'+data.cnt[color][size]+'개</span>'
+                                t +=      '</label>'
+                                t +=      '<label class="money">'+(parseInt(data[i].price * ((100-parseInt(data[i].discount))*0.01))*parseInt(data.cnt[color][size]))+'원</label>'
+                                t += '</div>'
+                                }
+                            }
+                        }
+                        t +=        '</div>'
+                        t +=        '<p class="total-money"><span class="total-cnt">총 0개</span><span class="money">0원</span></p>'
+                        t +=    '</td>'
+                        t += '</tr>'
+                        document.querySelector("tbody").innerHTML += t;
 
-                let el = document.querySelectorAll("tbody tr")[i]
-                let el2 = el.querySelectorAll(".size-cnt-one .num")
-                let el3 = el.querySelectorAll(".size-cnt-one .money")
-                let total_cnt = 0
-                let total_money = 0
-                for(let a=0;a<el2.length;a++){
-                    total_cnt += parseInt(el2[a].textContent)
-                    total_money += parseInt(el3[a].textContent.replace("원",""))
+                        let el = document.querySelectorAll("tbody tr")[i]
+                        let el2 = el.querySelectorAll(".size-cnt-one .num")
+                        let el3 = el.querySelectorAll(".size-cnt-one .money")
+                        let total_cnt = 0
+                        let total_money = 0
+                        for(let a=0;a<el2.length;a++){
+                            total_cnt += parseInt(el2[a].textContent)
+                            total_money += parseInt(el3[a].textContent.replace("원",""))
+                        }
+                        el.querySelector(".total-money .total-cnt").textContent = "총 "+total_cnt+"개"
+                        el.querySelector(".total-money .money").textContent = total_money+"원"
+                        
+                        document.querySelector(".total .total-buy-cnt").textContent = parseInt(document.querySelector(".total .total-buy-cnt").textContent)+total_cnt;
+                        document.querySelector(".total .product-total-money").textContent = parseInt(document.querySelector(".total .product-total-money").textContent)+data[i].price*total_cnt
+                        document.querySelector(".total .product-total-discount-money").textContent = parseInt(document.querySelector(".total .product-total-discount-money").textContent)+((parseInt(data[i].price)*total_cnt)-total_money)
+                    }
+                    document.querySelector(".total .total-buy-money").textContent = 
+                    parseInt(document.querySelector(".total .product-total-money").textContent)-parseInt(document.querySelector(".total .product-total-discount-money").textContent)
+                    
+                    
+                    
+                },
+                error : function(error){
+                    console.log(error)
                 }
-                el.querySelector(".total-money .total-cnt").textContent = "총 "+total_cnt+"개"
-                el.querySelector(".total-money .money").textContent = total_money+"원"
-                
-                document.querySelector(".total .total-buy-cnt").textContent = parseInt(document.querySelector(".total .total-buy-cnt").textContent)+total_cnt;
-                document.querySelector(".total .product-total-money").textContent = parseInt(document.querySelector(".total .product-total-money").textContent)+data[i].price*total_cnt
-                document.querySelector(".total .product-total-discount-money").textContent = parseInt(document.querySelector(".total .product-total-discount-money").textContent)+((parseInt(data[i].price)*total_cnt)-total_money)
-            }
-            document.querySelector(".total .total-buy-money").textContent = 
-            parseInt(document.querySelector(".total .product-total-money").textContent)-parseInt(document.querySelector(".total .product-total-discount-money").textContent)
-            
-            
-            
+            });
         },
         error : function(error){
             console.log(error)
         }
     });
 
+    
+
+    document.querySelector("tbody").addEventListener("click",(e)=>{
+        if(e.target.className == 'comment-btn'){
+            let url = 'commentSave'
+            let commentData = {
+                    "rating":parseInt(e.target.parentNode.querySelector(".comment-rating").value),
+                    "content":e.target.parentNode.querySelector(".content").value,
+                    "title":e.target.parentNode.querySelector(".comment-title").value,
+                    "productId":e.target.parentNode.parentNode.querySelector(".productId").value,
+                    "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu'
+                }
+            if(e.target.textContent == '리뷰수정'){
+                url = 'commentUpdate'
+                commentData['commentId'] = e.target.value
+            }
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data : commentData,
+                success : function(data){
+                    
+                },
+                error : function(error){
+                    console.log(error)
+                }
+            });
+        }
+    })
+
+    document.querySelector("tbody").addEventListener('input',(e)=>{
+        if(e.target.className=='comment-rating'){
+            if(parseFloat(e.target.value)>5){
+                e.target.value = 5
+            }else  if(0>parseFloat(e.target.value)){
+                e.target.value = 0
+            }else if(e.target.value.includes('.') && e.target.value.length>3){
+                e.target.value = Math.floor(parseFloat(e.target.value)*10)/10
+            }
+            e.target.value=e.target.value.replace(/[^0-9.]/g,"")
+        }
+    })
 
     function calculate(target){
         let currentTarget = target.parentNode.parentNode.parentNode.parentNode.parentNode

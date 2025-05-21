@@ -3,6 +3,8 @@ package com.example.shopping.comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -13,19 +15,23 @@ public class CommentController {
     CommentService commentService;
 
     @PostMapping("commentSave")
+    @ResponseBody
     public int commentSave(CommentDto commentDto){
         return commentService.commentSave(commentDto);
     }
 
     @PostMapping("commentUpdate")
+    @ResponseBody
     public int commentUpdate(CommentDto commentDto){
         return commentService.commentUpdate(commentDto);
     }
 
-    @PostMapping("commentList")
-    public List<CommentDto> commentList(CommentDto commentDto){
-        return commentService.commentList(commentDto);
+    @PostMapping("productReview")
+    @ResponseBody
+    public List<CommentDto> productReview(@RequestParam String productId,@RequestParam int reviewStartNum){
+        return commentService.productReview(productId,reviewStartNum);
     }
+
 
     @PostMapping("replaySave")
     public int replaySave(ReplayDto replayDto){
@@ -37,8 +43,4 @@ public class CommentController {
         return commentService.replayUpdate(replayDto);
     }
 
-    @PostMapping("replayList")
-    public List<ReplayDto> replayList(ReplayDto replayDto){
-        return commentService.replayList(replayDto);
-    }
 }

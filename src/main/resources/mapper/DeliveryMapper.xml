@@ -121,6 +121,27 @@
         WHERE deliveryId=#{deliveryId}
     </select>
 
+    <select id="deliveryDetailCommentsList" resultType="Map">
+        SELECT
+        a.productId
+        , a.cnt
+        , a.img
+        , a.price
+        , a.discount
+        , a.productName
+        , a.deliveryId
+        , b.commentId
+        , b.rating
+        , b.content
+        , b.title
+        , b.userId
+        FROM deliveryDetail a
+        LEFT OUTER JOIN comments b
+        ON a.productId = b.productId
+        WHERE (a.deliveryId=#{deliveryId})
+        OR (b.userId = #{userId} AND a.productId=#{deliveryId})
+    </select>
+
     <insert id="deliveryAddressSave">
         <selectKey keyProperty="deliveryAddressId" order="AFTER" resultType="int">
             SELECT lastval(sq_address);

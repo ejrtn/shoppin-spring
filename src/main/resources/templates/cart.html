@@ -277,7 +277,7 @@
                 url : '/cartDelete',
                 type : 'POST',
                 data : {
-                    "userId":"deoksu",
+                    "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu',
                     "productId":e.target.parentNode.parentNode.querySelector(".clothes").value
                 },
                 success : function(data){

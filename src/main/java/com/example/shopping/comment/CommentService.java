@@ -24,8 +24,8 @@ public class CommentService {
         return commentMapper.commentUpdate(commentDto);
     }
 
-    public List<CommentDto> commentList(CommentDto commentDto){
-        return commentMapper.commentList(commentDto);
+    public List<CommentDto> productReview(String productId, int reviewStartNum){
+        return commentMapper.productReview(productId,reviewStartNum);
     }
 
     public int replaySave(ReplayDto replayDto){
@@ -34,10 +34,6 @@ public class CommentService {
 
     public int replayUpdate(ReplayDto replayDto){
         return replayMapper.replayUpdate(replayDto);
-    }
-
-    public List<ReplayDto> replayList(ReplayDto replayDto){
-        return replayMapper.replayList(replayDto);
     }
 
 }

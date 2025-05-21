@@ -7,8 +7,19 @@
     <link href="/sell.css" rel="stylesheet" />
     <style>
         .main2{
-            width: 750px;
+            width: 780px;
             margin: 0 auto;
+            display: flex;
+            flex-flow: column;
+        }
+        .main2 .comment-head .star-rating{
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            font-size: 23px;
+        }
+        .main2 .comment-head .star-rating label{
+            font-size: 15px;
         }
         .main2 .comment-head .star-ratings {
             color: #aaa9a9; 
@@ -47,15 +58,31 @@
             justify-content: space-between;
             align-items: center;
         }
-        .comment{
+        .main2 p{
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .main2 .comment{
             margin-bottom: 10px;
         }
-        textarea{
+        .main2 textarea{
             resize: none;
-            width: 746px;
-            height: 78px;
+            width: 780px;
+            padding: 5px;
             border: 1px solid black;
             font-size: 16px;
+            box-sizing: border-box;
+        }
+        .main2 .comments-add{
+            cursor: pointer;
+            background-color: #e8e8e8;
+            border: 1px solid #c8c8c8;
+            outline: none;
+            align-self: center;
+        }
+        .main2 .comments-add.hidden{
+            display: none;
         }
     </style>
 </head>
@@ -89,34 +116,13 @@
     </div>
     <div class="main2">
         <p>상품 리뷰</p>
-        <div class="comments">
-            <div class="comment">
-                <div class="comment-head">
-                    <span class="title">asdsadasdsad</span>
-                    <div>
-                        <label>
-                            <span>4.1</span>
-                            <span>/</span>
-                            <span>5</span>
-                        </label>
-                        <div class="star-ratings">
-                            
-                            <div class="star-ratings-fill" style="width: 10%;">
-                                
-                                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                            </div>
-                            <div class="star-ratings-base">
-                                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <textarea class="content" disabled></textarea>
-            </div>
-        </div>
+        <div class="comments"></div>
+        <button class="comments-add hidden">더보기</button>
     </div>
 </body>
 <script>
+    let reviewStartNum = 0
+    show_review();
     $.ajax({
         url : '/getProduct',
         type : 'POST',
@@ -166,6 +172,7 @@
             console.log(error)
         }
     });
+    
 
     document.querySelector(".color").addEventListener("click",(e)=>{
         if(e.target.tagName == 'DIV'){
@@ -280,7 +287,7 @@
             type : 'POST',
             data : {
                 productId:document.querySelector("#productId").value,
-                userId:document.querySelector("#userId").value==''?'deoksu':document.querySelector("#userId").value,
+                userId:sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu',
                 cnt:JSON.stringify(cnt)
             },
             success : function(data){
@@ -311,6 +318,55 @@
         }
         document.querySelector(".total-money .total-cnt").textContent = "총 "+cnt+"개"
         return cnt
+    }
+    document.querySelector('.comments-add').addEventListener("click",(e)=>{show_review()})
+    function show_review(){
+        $.ajax({
+            url : '/productReview',
+            type : 'POST',
+            data : {
+                "productId":document.querySelector("#productId").value,
+                "reviewStartNum":reviewStartNum
+            },
+            success : function(data){
+                if(data.length < 11){
+                    document.querySelector('.comments-add').classList.add('hidden')
+                }else{
+                    document.querySelector('.comments-add').classList.remove('hidden')
+                }
+                let size = data.length==11?10:data.length
+                
+                for(let i=0;i<size;i++){
+                    let t = '<div class="comment">'
+                    t +=        '<div class="comment-head">'
+                    t +=            '<span class="title"><em>제목 : </em><em>'+data[i].title+'</em></span>'
+                    t +=            '<div class="star-rating">'
+                    t +=                '<div class="star-ratings">'
+                    t +=                    '<div class="star-ratings-fill" style="width: '+(data[i].rating*20)+'%;">'
+                    t +=                        '<span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>'
+                    t +=                    '</div>'
+                    t +=                    '<div class="star-ratings-base">'
+                    t +=                        '<span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>'
+                    t +=                    '</div>'
+                    t +=                '</div>'
+                    t +=                '<label>'
+                    t +=                    '<span>'+data[i].rating+'</span>'
+                    t +=                    '<span>/</span>'
+                    t +=                    '<span>5</span>'
+                    t +=                '</label>'
+                    t +=            '</div>'
+                    t +=        '</div>'
+                    t +=        '<textarea class="content" disabled>'+(data[i].content)+'</textarea>'
+                    t +=    '</div>'
+                    
+                    document.querySelector(".comments").innerHTML += t
+                }
+                reviewStartNum += 10
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
     }
 </script>
 </html>

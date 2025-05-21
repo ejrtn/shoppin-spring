@@ -19,6 +19,8 @@ public interface DeliveryMapper {
 
     List<DeliveryDetailDto> deliveryDetailList(String deliveryId);
 
+    List<DeliveryDetailDto> deliveryDetailCommentsList(String deliveryId, String userId);
+
     int deliveryAddressSave(DeliveryAddressListDto deliveryAddressListDto);
 
     List<DeliveryAddressListDto> deliveryAddressList(String userId);

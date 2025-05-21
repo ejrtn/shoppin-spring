@@ -83,4 +83,8 @@ public class DeliveryService {
     public List<DeliveryDetailDto> deliveryDetailList(String deliveryId){
         return deliveryMapper.deliveryDetailList(deliveryId);
     }
+
+    public List<DeliveryDetailDto> deliveryDetailCommentsList(String deliveryId, String userId){
+        return deliveryMapper.deliveryDetailCommentsList(deliveryId,userId);
+    }
 }

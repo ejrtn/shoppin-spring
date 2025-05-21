@@ -119,6 +119,12 @@ public class DeliveryController {
         return deliveryService.deliveryDetailList(deliveryId);
     }
 
+    @PostMapping("deliveryDetailCommentsList")
+    @ResponseBody
+    public List<DeliveryDetailDto> deliveryDetailList(@RequestParam String deliveryId,@RequestParam String userId){
+        return deliveryService.deliveryDetailCommentsList(deliveryId,userId);
+    }
+
     @PostMapping("/courier")
     public String courier(Model model, @RequestParam String t_invoice, @RequestParam String t_name){
         model.addAttribute("trackNumber",t_invoice);

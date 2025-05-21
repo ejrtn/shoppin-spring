@@ -12,7 +12,7 @@ public interface ReplayMapper {
 
     int replayUpdate( ReplayDto replayDto);
 
-    List<ReplayDto> replayList(ReplayDto replayDto);
+    List<ReplayDto> productReview(String productId,int reviewStartNum);
 
     int replayDelete(String commentId, String replayId);
 }

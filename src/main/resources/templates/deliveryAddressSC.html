@@ -204,7 +204,7 @@
     document.querySelector(".ok").addEventListener("click",(e)=>{
         let url = '/deliveryAddressSave'
         let data = {
-            "userId":'deoksu',
+            "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu',
             "name":document.querySelector(".name").value,
             "phon":document.querySelector(".phon").value,
             "postcode":document.querySelector("#sample6_postcode").value,
