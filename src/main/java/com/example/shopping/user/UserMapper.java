@@ -3,6 +3,7 @@ package com.example.shopping.user;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -27,4 +28,8 @@ public interface UserMapper {
     UserDto getUser(String userId);
 
     int userUpdate(UserDto userDto);
+
+    String chatInfo(String userId);
+
+    List<UserDto> userList(int start);
 }

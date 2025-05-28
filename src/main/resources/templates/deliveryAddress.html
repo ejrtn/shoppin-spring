@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:fragment="header">
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
@@ -132,6 +132,7 @@
     </style>
 </head>
 <body>
+    <input type="hidden" th:value="${session.userId==null?'deoksu':session.userId}" id="userId">
     <div class="main">
         <h3>배송지 정보</h3>
         <div class="search">
@@ -147,7 +148,7 @@
     $.ajax({
         url : '/deliveryAddressList',
         type : 'POST',
-        data : {"userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu'},
+        data : {"userId":document.querySelector("#userId").value},
         success : function(data){
             for(let i=0;i<data.length;i++){
                 let t = ''

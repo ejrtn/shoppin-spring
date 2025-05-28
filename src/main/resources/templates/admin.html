@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+        html,body{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            font-style:normal;
+        }
+        html{
+            padding-bottom: 10px;
+        }
+        em{
+            font-style:normal;
+        }
+        p{
+            margin: 0px;
+        }
+        a{
+            text-decoration-line: none;
+            color: black;
+        }
+        .main{
+            display: flex;    
+            justify-content: center;
+            padding-top: 45px;
+            max-height: 500px;
+            width: 1200px;
+        }
+        .user-list{
+            margin-right: 10px;
+            display: flex;
+            flex-flow: column;
+            width: 150px;
+            max-height: 500px;
+            min-width: 150px;
+            overflow-y: auto;
+        }
+        .list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .list::-webkit-scrollbar-thumb {
+            background-color: #2f3542;
+            border-radius: 10px;
+        }
+        .list::-webkit-scrollbar-track {
+            background-color: grey;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+        .title{
+            font-weight: 900;
+            margin: 5px 8px;
+            text-align: center;
+        }
+        .user-list .add{
+            font-weight: 900;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        .chat-list{
+
+        }
+        .chat-list-line{
+            display: flex;
+            font-size: 13px;
+            width: 900px;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .chat{
+            width: 214px;
+            display: flex;
+            flex-flow: column;
+        }
+        .chat span{
+            cursor: pointer;
+            font-weight: 900;
+        }
+        .chat.hidden{
+            display: none;
+        }
+        .chat .chat-head{
+            display: flex;
+            justify-content: space-between;
+        }
+        .chatting{
+            width: 200px;
+            height: 300px;
+            border: 1px solid #999999;
+            padding: 9px 6px;
+            background-color: #ebebeb;
+            overflow-y: auto;
+        }
+        .chatting::-webkit-scrollbar {
+            width: 5px;
+        }
+        .chatting::-webkit-scrollbar-thumb {
+            background-color: #2f3542;
+            border-radius: 10px;
+        }
+        .chatting::-webkit-scrollbar-track {
+            background-color: grey;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+        .write_area{
+            width: 200px;
+            height: 19px;
+            border: 1px solid #999999;
+            border-top: none;
+            padding: 9px 6px;
+            background: #ebebeb;
+            font-size: 13px;
+            overflow-y: auto;
+            outline: 0px;
+        }
+        .write_area::-webkit-scrollbar {
+            width: 5px;
+        }
+        .write_area::-webkit-scrollbar-thumb {
+            background-color: #2f3542;
+            border-radius: 10px;
+        }
+        .write_area::-webkit-scrollbar-track {
+            background-color: grey;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+        .user{
+            display: flex;    
+            justify-content: space-between;
+        }
+        .user .add{
+
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="user-list">
+            <p class="title">사용자 목록</p>
+            
+        </div>
+        <div class="chat-list">
+            <p class="title">채팅 목록</p>
+            <div class="chat-list-line">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let user_start = 0
+    chatInfo();
+    let key = { 'shift': 0, 'enter': 0 }
+    document.querySelector(".chat-list").addEventListener("keydown", function (event) {
+        if(event.target.className=='write_area'){
+            if (event.defaultPrevented) {
+                return; // 이미 이벤트가 실행되는 중이라면 아무 동작도 하지 않습니다.
+            }
+            if (event.keyCode === 16) { key['shift'] = 1 }
+            if (event.keyCode === 13 && key['shift'] === 0) {
+                sendMsg(event)
+                // 두 번 동작하는 것을 막기 위해 기본 동작을 취소합니다.
+                event.preventDefault();
+            }
+        }
+    })
+    document.querySelector(".chat-list").addEventListener("keyup", function (event) {
+        if(event.target.className=='write_area'){
+            if (event.defaultPrevented) {
+                return; // 이미 이벤트가 실행되는 중이라면 아무 동작도 하지 않습니다.
+            }
+            if (event.keyCode === 16) { key['shift'] = 0 }
+        }
+    })
+
+    const websocket = new WebSocket("ws://localhost:8080/ws/chat");
+    websocket.onopen = function(){
+        let enterMsg={"type" : "JOIN","roomId":'admin',"message":""};
+        websocket.send(JSON.stringify(enterMsg));
+    }
+    websocket.onclose = function(){
+        // console.log('disconnet');
+    }
+    websocket.onerror = function (e){
+        console.log(e);
+    }
+    websocket.onmessage = function (e) {
+        data = JSON.parse(e.data)
+        if(data.type != 'HELLO' && data.roomId != 'admin'){
+            if(data.type == 'JOIN'){
+                if(document.querySelector("#"+data.roomId) == null){
+                    let el = document.querySelectorAll(".chat-list-line")
+                    if(el[el.length-1].children.length >= 4){
+                        document.querySelector(".chat-list").innerHTML += '<div class="chat-list-line"></div>'
+                        let t = '<div class="chat" id="'+data.roomId+'">'
+                            t +=     '<di class="chat-head"><span>'+data.message+'</span><span class="chat-close">X</span></di>'
+                            t +=     '<div class="chatting"><div class="old-chat"></div></div>'
+                            t +=     '<div id="write_area" class="write_area" contenteditable="true" ondragenter="return false;" ondrop="return false;" ondragover="return false;"></div>'
+                            t += '</div>'
+                        document.querySelectorAll(".chat-list-line")[el.length].innerHTML += t
+                    }else{
+                        let t = '<div class="chat" id="'+data.roomId+'">'
+                            t +=     '<di class="chat-head"><span>'+data.message+'</span><span class="chat-close">X</span></di>'
+                            t +=     '<div class="chatting"><div class="old-chat"></div></div>'
+                            t +=     '<div id="write_area" class="write_area" contenteditable="true" ondragenter="return false;" ondrop="return false;" ondragover="return false;"></div>'
+                            t += '</div>'
+                        document.querySelectorAll(".chat-list-line")[el.length-1].innerHTML += t
+                    }
+                    $.ajax({
+                        url : '/chatList',
+                        type : 'POST',
+                        data : {"userId":data.roomId},
+                        success : function(chat){
+                            for(let i=0;i<chat.length;i++){
+                                let t = '<p class="message">'+(chat[i].sender=='admin'?'나 : ':'고객 : ')+chat[i].message+'</p>'
+                                const chatting = document.querySelector(".chatting");
+                                chatting.innerHTML += t
+                                chatting.scrollTop = chatting.scrollHeight
+                            }
+                            let enterMsg={"type" : "JOIN","roomId":data.roomId,"message":""};
+                            websocket.send(JSON.stringify(enterMsg));
+                        },
+                        error : function(error){
+                            console.log(error)
+                        }
+                    });
+                }
+            }else if(data.type == 'QUIT'){
+                document.querySelector("#"+data.roomId).remove()
+            }else{
+                if(document.querySelector("#"+data.roomId) != null){
+                    let t = '<p class="message">'+(data.sender=='admin'?'나 : ':'고객 : ')+data.message+'</p>'
+                    const chatting = document.querySelector("#"+data.roomId+" .chatting");
+                    chatting.innerHTML += t
+                    chatting.scrollTop = chatting.scrollHeight
+                }
+            }
+        }
+    }
+
+    document.querySelector(".user-list").addEventListener("click",(e)=>{
+        if(e.target.className == 'add'){
+            
+            let roomId = e.target.previousElementSibling.textContent.split("(")[1].split(")")[0]
+            
+            if(document.querySelector("#"+roomId) == null){
+                let enterMsg={"type" : "JOIN","roomId":roomId,"sender":"admin","message":""};
+                websocket.send(JSON.stringify(enterMsg));
+            }
+        }
+    })
+    document.querySelector(".chat-list").addEventListener("click",(e)=>{
+        if(e.target.className == 'chat-close'){
+            let quitMsg={"type" : "QUIT", "roomId":e.target.parentNode.id, "message":""};
+            websocket.send(JSON.stringify(quitMsg));
+            e.target.parentNode.remove()
+        }
+    })
+
+     //메세지 보내기 버튼 눌렀을 떄..
+    function sendMsg(event) {
+        let content=event.target.innerHTML;
+        let talkMsg={"type" : "TALK", "roomId":event.target.parentNode.id,"sender":"admin", "message":content};
+        websocket.send(JSON.stringify(talkMsg));
+        event.target.textContent = '';
+    }
+    function quit(roomId){
+        let quitMsg={"type" : "QUIT", "roomId":roomId, "message":""};
+        websocket.send(JSON.stringify(quitMsg));
+        websocket.close();
+    }
+
+    window.addEventListener('beforeunload', (event) => {
+        // 명세에 따라 preventDefault는 호출해야하며, 기본 동작을 방지합니다.
+        // event.preventDefault();  // 변경 사항이 적용되지 않습니다 경고창 뜸
+        
+        let el = document.querySelectorAll(".chat")
+        for(let i=0;i<el.length;i++){
+            quit(el[i].id)
+        }
+        // 대표적으로 Chrome에서는 returnValue 설정이 필요합니다.
+        event.returnValue = '';
+    });
+
+    function chatInfo(){
+        $.ajax({
+            url : '/userList',
+            type : 'POST',
+            data:{"start":user_start},
+            success : function(data){
+                for(let i=0;i<data.length;i++){
+                    t = '<span class="user">' +
+                            '<label class="name">'+(data[i].name+'('+data[i].userId+')')+'</label>' +
+                            '<div class="add">+</div>' +
+                        '</span>'
+                    document.querySelector(".user-list").innerHTML += t
+                }
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    }
+</script>
+</html>

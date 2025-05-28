@@ -105,6 +105,32 @@
         WHERE userId=#{userId}
     </select>
 
+    <select id="chatInfo">
+        SELECT
+            concat(name,'(',userId,')') AS name_id
+        FROM user
+        WHERE userId=#{userId}
+    </select>
+
+    <select id="userList" resultType="Map">
+        SELECT
+        name
+        , userId
+        , address
+        , phonNumber
+        , gender
+        , password
+        , yyyymmdd
+        , email
+        , deleteYn
+        , postcode
+        , detailAddress
+        , extraAddress
+        , partnerUserId
+        FROM user
+        limit #{start},21
+    </select>
+
     <update id="userUpdate">
         UPDATE user
         SET

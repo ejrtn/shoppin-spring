@@ -9,6 +9,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserService{
@@ -83,5 +84,13 @@ public class UserService{
 
     public int userUpdate(UserDto userDto){
         return userMapper.userUpdate(userDto);
+    }
+
+    public String chatInfo(String userId){
+        return userMapper.chatInfo(userId);
+    }
+
+    public List<UserDto> userList(int start) {
+        return userMapper.userList(start);
     }
 }

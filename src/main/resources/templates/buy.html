@@ -7,7 +7,7 @@
     <link href="/buy.css" rel="stylesheet" />
 </head>
 <body>
-    <header th:replace="/header :: header"></header>
+    <header th:replace="~{/header :: header}"></header>
     <div class="main">
         <div>
             <label class="page-title">주문서</label>
@@ -51,7 +51,6 @@
             <p><span>총 개수</span><span class="total-buy-cnt">0</span><span>개</span></p>
             <p><span>총 구매 금액</span><span class="total-buy-money">0</span><span>원</span></p>
             <button class="buy-btn">구매하기</button>
-            <!-- <button class="cancel-btn">취소소하기</button> -->
         </div>
     </div>
 </body>
@@ -134,7 +133,7 @@
     $.ajax({
         url : '/deliveryAddressDefault',
         type : 'POST',
-        data : {"userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu'},
+        data : {"userId":document.querySelector("#userId").value},
         success : function(data){
             document.querySelector(".delivery-info .name").textContent = data.name
             document.querySelector(".delivery-info .phon").textContent = data.phon

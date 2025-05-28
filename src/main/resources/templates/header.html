@@ -5,6 +5,80 @@
     <title>Title</title>
     <link href="/header.css" rel="stylesheet" />
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+        .msg{
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 1;
+            display: flex;
+            flex-flow: column;
+        }
+        .msg img{
+            height: 45px;
+            width: 45px;
+            cursor: pointer;
+        }
+        .msg .chat.hidden{
+            display: none;
+        }
+        .msg .chatting{
+            width: 200px;
+            height: 300px;
+            border: 1px solid #999999;
+            padding: 9px 6px;
+            background-color: #ebebeb;
+            overflow-y: auto;
+        }
+        .msg .chatting .default-hello{
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .msg .chatting::-webkit-scrollbar {
+            width: 5px;
+        }
+        .msg .chatting::-webkit-scrollbar-thumb {
+            background-color: #2f3542;
+            border-radius: 10px;
+        }
+        .msg .chatting::-webkit-scrollbar-track {
+            background-color: grey;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+        .msg .write_area{
+            width: 200px;
+            height: 19px;
+            border: 1px solid #999999;
+            border-top: none;
+            padding: 9px 6px;
+            background: #ebebeb;
+            font-size: 13px;
+            overflow-y: auto;
+            outline: 0px;
+        }
+        .msg .write_area::-webkit-scrollbar {
+            width: 5px;
+        }
+        .msg .write_area::-webkit-scrollbar-thumb {
+            background-color: #2f3542;
+            border-radius: 10px;
+        }
+        .msg .write_area::-webkit-scrollbar-track {
+            background-color: grey;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+        .msg picture{
+            align-self: flex-end;
+            margin-top: 5px;
+        }
+        .msg p{
+            padding: 0px;
+            margin: 0px;
+            font-size: 13px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -40,15 +114,31 @@
             </div>
 
         </div>
-        <input type="hidden" th:value="${session.userId}" id="userId">
+        <input type="hidden" th:value="${session.userId==null?'deoksu':session.userId}" id="userId">
         <h3 class="my" th:if="${session.userId}" onclick="logout()">로그아웃</h3>
         <h3 class="my" th:if="${session.userId}" onclick="location.href='/userInfo'">내정보</h3>
         <h3 class="my" th:if="${session.userId}" onclick="location.href='/cart'">장바구니</h3>
         <h3 class="my" th:if="${session.userId}" onclick="location.href='/delivery'">주문목록</h3>
         <h3 class="my" th:if="${session.userId==null}" onclick="location.href='/login'" hidden>로그인</h3>
     </header>
+
+    <div class="msg">
+        <div class="chat hidden">
+            <div class="chatting">
+                <p class="default-hello"></p>
+                <div class="old-chat"></div>
+            </div>
+            <div id="write_area" class="write_area" contenteditable="true" ondragenter="return false;" ondrop="return false;" ondragover="return false;"></div>
+        </div>
+        <picture>
+            <source srcset="/msg-icon.png" type="image/webp" />
+            <img src="/msg-icon.png"/>
+        </picture>
+    </div>
 </body>
 <script>
+    let key = { 'shift': 0, 'enter': 0 }
+    let roomId = document.querySelector("#userId").value
     function logout(){
         $.ajax({
             url : '/logout',
@@ -66,5 +156,94 @@
             }
         });
     }
+    document.querySelector(".msg picture").addEventListener("click",(e)=>{
+        let el = document.querySelector(".chat")
+        if(el.classList.contains("hidden")){
+            el.classList.remove("hidden")
+        }else{
+            el.classList.add("hidden")
+        }
+    })
+    document.querySelector(".write_area").addEventListener("keydown", function (event) {
+        if (event.defaultPrevented) {
+            return; // 이미 이벤트가 실행되는 중이라면 아무 동작도 하지 않습니다.
+        }
+        if (event.keyCode === 16) { key['shift'] = 1 }
+        if (event.keyCode === 13 && key['shift'] === 0) {
+            sendMsg()
+            // 두 번 동작하는 것을 막기 위해 기본 동작을 취소합니다.
+            event.preventDefault();
+        }
+    })
+    document.querySelector(".write_area").addEventListener("keyup", function (event) {
+        if (event.defaultPrevented) {
+            return; // 이미 이벤트가 실행되는 중이라면 아무 동작도 하지 않습니다.
+        }
+        if (event.keyCode === 16) { key['shift'] = 0 }
+    })
+
+    const websocket = new WebSocket("ws://localhost:8080/ws/chat");
+    websocket.onopen = function(){
+        
+        $.ajax({
+            url : '/chatList',
+            type : 'POST',
+            data : {"userId":roomId},
+            success : function(data){
+                for(let i=0;i<data.length;i++){
+                    let t = '<p class="message">'+(data[i].sender=='admin'?'운영자 : ':'나 : ')+data[i].message+'</p>'
+                    const chatting = document.querySelector(".chatting");
+                    chatting.innerHTML += t
+                    chatting.scrollTop = chatting.scrollHeight
+                }
+                let enterMsg={"type" : "JOIN","roomId":roomId,"message":""};
+                websocket.send(JSON.stringify(enterMsg));
+            },
+            error : function(error){
+                console.log(error)
+            }
+        });
+    }
+    websocket.onclose = function(){
+        // console.log('disconnet');
+    }
+    websocket.onerror = function (e){
+        console.log(e);
+    }
+    websocket.onmessage = function (e) {
+        data = JSON.parse(e.data)
+        if(data.type != 'JOIN' && data.type != 'QUIT'){
+            if(data.type == 'HELLO'){
+                document.querySelector(".default-hello").innerHTML = data.message 
+            }else{
+                let t = '<p class="message">'+(data.sender=='admin'?'운영자 : ':'나 : ')+data.message+'</p>'
+                const chatting = document.querySelector(".chatting");
+                chatting.innerHTML += t
+                chatting.scrollTop = chatting.scrollHeight
+            }
+        }
+    }
+
+     //메세지 보내기 버튼 눌렀을 떄..
+    function sendMsg() {
+        let content=document.querySelector(".write_area").innerHTML;
+        let talkMsg={"type" : "TALK", "roomId":roomId,"sender":"user","message":content};
+        websocket.send(JSON.stringify(talkMsg));
+        document.querySelector(".write_area").textContent = '';
+    }
+    function quit(){
+        let quitMsg={"type" : "QUIT", "roomId":roomId, "message":""};
+        websocket.send(JSON.stringify(quitMsg));
+        websocket.close();
+    }
+
+    window.addEventListener('beforeunload', (event) => {
+        // 명세에 따라 preventDefault는 호출해야하며, 기본 동작을 방지합니다.
+        // event.preventDefault();  // 변경 사항이 적용되지 않습니다 경고창 뜸
+        quit()
+        // 대표적으로 Chrome에서는 returnValue 설정이 필요합니다.
+        event.returnValue = '';
+    });
+
 </script>
 </html>

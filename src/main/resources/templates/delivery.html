@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns:if="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
@@ -68,7 +69,7 @@
     </style>
 </head>
 <body>
-    <header th:replace="/header :: header"></header>
+    <header th:replace="~{/header :: header}"></header>
     <div class="main">
         <table>
             <thead>
@@ -107,7 +108,7 @@
             url : '/deliveryList',
             type : 'POST',
             data : {
-                "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu',
+                "userId":document.querySelector("#userId").value,
                 "start":start
             },
             success : function(data){

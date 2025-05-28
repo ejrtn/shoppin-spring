@@ -7,7 +7,7 @@
     <link href="/cart.css" rel="stylesheet" />
 </head>
 <body>
-    <header th:replace="/header :: header"></header>
+    <header th:replace="~{/header :: header}"></header>
     <div class="main">
         <table>
             <thead>
@@ -36,7 +36,7 @@
     $.ajax({
         url : '/cartList',
         type : 'POST',
-        data : {"userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu'},
+        data : {"userId":document.querySelector("#userId").value},
         success : function(data){
             cartData = data
             for(let i=0;i<data.length;i++){
@@ -277,7 +277,7 @@
                 url : '/cartDelete',
                 type : 'POST',
                 data : {
-                    "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu',
+                    "userId":document.querySelector("#userId").value==''?document.querySelector("#userId").value:'deoksu',
                     "productId":e.target.parentNode.parentNode.querySelector(".clothes").value
                 },
                 success : function(data){

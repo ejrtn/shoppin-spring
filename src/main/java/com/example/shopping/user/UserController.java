@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 @Controller
 public class UserController {
 
@@ -35,7 +37,9 @@ public class UserController {
     public int login(HttpSession httpSession, String userId, String password){
 
         int r = userService.login(userId,password);
-        if(r == 1) httpSession.setAttribute("userId",userId);
+        if(r == 1) {
+            httpSession.setAttribute("userId",userId);
+        }
         return r;
     }
 
@@ -95,5 +99,17 @@ public class UserController {
     @ResponseBody
     public int userUpdate(UserDto userDto){
         return userService.userUpdate(userDto);
+    }
+
+    @PostMapping("/chatInfo")
+    @ResponseBody
+    public String chatInfo(@RequestParam String userId){
+        return userService.chatInfo(userId);
+    }
+
+    @PostMapping("/userList")
+    @ResponseBody
+    public List<UserDto> userList(@RequestParam int start){
+        return userService.userList(start);
     }
 }

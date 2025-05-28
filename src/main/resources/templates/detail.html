@@ -198,7 +198,7 @@
     </style>
 </head>
 <body>
-    <header th:replace="/header :: header"></header>
+    <header th:replace="~{/header :: header}"></header>
     <div class="main">
         <div>
             <label class="page-title">주문 상세보기</label>
@@ -246,7 +246,7 @@
                 type : 'POST',
                 data : {
                     "deliveryId":location.href.split("?deliveryId=")[1],
-                    "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu'
+                    "userId":document.querySelector("#userId").value==''?document.querySelector("#userId").value:'deoksu'
                 },
                 success : function(data){
                     for(let i=0;i<data.length;i++){
@@ -341,7 +341,7 @@
                     "content":e.target.parentNode.querySelector(".content").value,
                     "title":e.target.parentNode.querySelector(".comment-title").value,
                     "productId":e.target.parentNode.parentNode.querySelector(".productId").value,
-                    "userId":sessionStorage.getItem("userId")!=null?sessionStorage.getItem("userId"):'deoksu'
+                    "userId":document.querySelector("#userId").value
                 }
             if(e.target.textContent == '리뷰수정'){
                 url = 'commentUpdate'
