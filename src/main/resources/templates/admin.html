@@ -42,14 +42,31 @@
             min-width: 150px;
             overflow-y: auto;
         }
-        .list::-webkit-scrollbar {
+        .user-list .user{
+            position: relative;
+            display: flex;    
+            justify-content: space-between;
+            padding-left: 10px;
+        }
+        .user-list .user .add{
+
+        }
+        .user-list .user .new-chat-cnt{
+            color: red;
+            font-weight: 600;
+            font-size: 13px;
+            position: absolute;
+            top: -5px;
+            left: 0px;
+        }
+        .user-list::-webkit-scrollbar {
             width: 5px;
         }
-        .list::-webkit-scrollbar-thumb {
+        .user-list::-webkit-scrollbar-thumb {
             background-color: #2f3542;
             border-radius: 10px;
         }
-        .list::-webkit-scrollbar-track {
+        .user-list::-webkit-scrollbar-track {
             background-color: grey;
             border-radius: 10px;
             box-shadow: inset 0px 0px 5px white;
@@ -133,13 +150,6 @@
             border-radius: 10px;
             box-shadow: inset 0px 0px 5px white;
         }
-        .user{
-            display: flex;    
-            justify-content: space-between;
-        }
-        .user .add{
-
-        }
     </style>
 </head>
 <body>
@@ -195,6 +205,7 @@
     websocket.onmessage = function (e) {
         data = JSON.parse(e.data)
         if(data.type != 'HELLO' && data.roomId != 'admin'){
+            
             if(data.type == 'JOIN'){
                 if(document.querySelector("#"+data.roomId) == null){
                     let el = document.querySelectorAll(".chat-list-line")
@@ -221,7 +232,7 @@
                         success : function(chat){
                             for(let i=0;i<chat.length;i++){
                                 let t = '<p class="message">'+(chat[i].sender=='admin'?'나 : ':'고객 : ')+chat[i].message+'</p>'
-                                const chatting = document.querySelector(".chatting");
+                                const chatting = document.querySelector("#"+data.roomId+" .chatting");
                                 chatting.innerHTML += t
                                 chatting.scrollTop = chatting.scrollHeight
                             }
@@ -234,13 +245,21 @@
                     });
                 }
             }else if(data.type == 'QUIT'){
-                document.querySelector("#"+data.roomId).remove()
+
             }else{
+                
                 if(document.querySelector("#"+data.roomId) != null){
                     let t = '<p class="message">'+(data.sender=='admin'?'나 : ':'고객 : ')+data.message+'</p>'
                     const chatting = document.querySelector("#"+data.roomId+" .chatting");
                     chatting.innerHTML += t
                     chatting.scrollTop = chatting.scrollHeight
+                    document.querySelector("#user-"+data.roomId+" .new-chat-cnt").textContent = ''
+                }else{
+                    let el = document.querySelector("#user-"+data.roomId+" .new-chat-cnt")
+                    if(el.textContent == '') el.textContent = 0
+                    if(parseInt(el.textContent)>=100) el.textContent == 99
+                    else el.textContent = parseInt(el.textContent) + 1
+
                 }
             }
         }
@@ -259,9 +278,9 @@
     })
     document.querySelector(".chat-list").addEventListener("click",(e)=>{
         if(e.target.className == 'chat-close'){
-            let quitMsg={"type" : "QUIT", "roomId":e.target.parentNode.id, "message":""};
+            let quitMsg={"type" : "QUIT", "roomId":e.target.parentNode.parentNode.id, "message":""};
             websocket.send(JSON.stringify(quitMsg));
-            e.target.parentNode.remove()
+            e.target.parentNode.parentNode.remove()
         }
     })
 
@@ -297,7 +316,8 @@
             data:{"start":user_start},
             success : function(data){
                 for(let i=0;i<data.length;i++){
-                    t = '<span class="user">' +
+                    t = '<span class="user" id="user-'+data[i].userId+'">' +
+                            '<span class="new-chat-cnt"></span>'+
                             '<label class="name">'+(data[i].name+'('+data[i].userId+')')+'</label>' +
                             '<div class="add">+</div>' +
                         '</span>'

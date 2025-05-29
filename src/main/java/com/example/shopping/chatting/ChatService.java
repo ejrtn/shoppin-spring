@@ -61,6 +61,11 @@ public class ChatService extends TextWebSocketHandler {
                 if(s.isOpen()) s.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));
             }
         }
+        if(!chatMessage.getRoomId().equals("admin")) {
+            for (WebSocketSession s : chatRoomSessionMap.get("admin")) {
+                if(s.isOpen()) s.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));
+            }
+        }
     }
 
     // 소켓 연결 종료
