@@ -1,11 +1,16 @@
 package com.example.shopping.kakao;
 
+import com.example.shopping.comment.CommentService;
+import com.example.shopping.common.CommonService;
 import com.example.shopping.delivery.DeliveryDto;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.UnknownHostException;
 
 @Controller
 @RequestMapping("/kakaoPayment")
@@ -15,10 +20,14 @@ public class KakaoPayController {
     @Autowired
     private KakaoPayService kakaoPayService;
 
+    @Autowired
+    private CommonService commonService;
+
     @PostMapping("/ready")  //결제준비요청
     @ResponseBody
-    public KakaoReadyResponse readyToKakaoPay(@RequestBody DeliveryDto deliveryDto){
-        return kakaoPayService.kakaoPayReady(deliveryDto);
+    public KakaoReadyResponse readyToKakaoPay(HttpServletRequest request, @RequestBody DeliveryDto deliveryDto) {
+        String ip = commonService.getClientIP(request);
+        return kakaoPayService.kakaoPayReady(deliveryDto,ip+":"+request.getServerPort());
     }
 
     @GetMapping("/approve")

@@ -46,6 +46,7 @@ public class ChatService extends TextWebSocketHandler {
         if (chatMessage.getType().equals(ChatMessage.MessageType.JOIN)) {
             chatRoomSessionMap.computeIfAbsent(chatMessage.getRoomId(), s -> new HashSet<>()).add(session);
             chatMessage.setMessage(userMapper.chatInfo(chatMessage.getRoomId()) + "님");
+
         } else if (chatMessage.getType().equals(ChatMessage.MessageType.QUIT)) {
             chatRoomSessionMap.get(chatMessage.getRoomId()).remove(session);
             chatMessage.setMessage(userMapper.chatInfo(chatMessage.getRoomId()) + "님");
@@ -58,11 +59,6 @@ public class ChatService extends TextWebSocketHandler {
         }
         if(chatRoomSessionMap.get(chatMessage.getRoomId())!=null) {
             for (WebSocketSession s : chatRoomSessionMap.get(chatMessage.getRoomId())) {
-                if(s.isOpen()) s.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));
-            }
-        }
-        if(!chatMessage.getRoomId().equals("admin")) {
-            for (WebSocketSession s : chatRoomSessionMap.get("admin")) {
                 if(s.isOpen()) s.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));
             }
         }

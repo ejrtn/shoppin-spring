@@ -127,3 +127,14 @@
 - 초록색 : 새로운 채팅
 - 채팅은 데이터가 저장되며, 7일 이내의 내용만 확인 가능, 새로고침하면 과거채팅과 새로운 채팅이 다시 나눠짐
 - 카카오톡처럼 채팅창을 열고 있지 않은 상태에서 메세지가오면 사용자 왼쪽에 싸인 숫자가 표시됨(max 99)
+
+## tomcat war 베포
+![alt text](image-17.png)
+- rocky 리눅스에 java 17 설치
+- /opt/위치에 tomcat 11 버전 설치
+- server.xml에서 port 9090으로 변경 및 context 추가
+```
+<Context path="" docBase="shopping"  reloadable="false" > </Context>
+```
+- 제품 이미지 tomcat에 위치
+ 

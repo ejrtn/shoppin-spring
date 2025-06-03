@@ -182,7 +182,7 @@
         if (event.keyCode === 16) { key['shift'] = 0 }
     })
 
-    const websocket = new WebSocket("ws://localhost:8080/ws/chat");
+    const websocket = new WebSocket("ws://"+location.host+"/ws/chat");
     websocket.onopen = function(){
         
         $.ajax({

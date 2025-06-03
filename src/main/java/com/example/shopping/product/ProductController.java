@@ -20,38 +20,39 @@ public class ProductController {
     @Autowired
     CommonService commonService;
 
-    @PostMapping("productSave")
-    public int productSave(ProductDto productDto, MultipartFile img){
-        return productService.productSave(productDto,img);
-    }
-
-    @PostMapping("productList")
-    public List<ProductDto> productList(String saleYn){
-        return productService.productList(saleYn);
-    }
-
-    @PostMapping("productUpdate")
-    public int productUpdate(ProductDto productDto){
-        return productService.productUpdate(productDto);
-    }
-
-    @PostMapping("getProduct")
-    @ResponseBody
-    public ProductDto getProduct(String productId){
-        return productService.getProduct(productId);
-    }
-
-    @GetMapping("imgLoad")
-    @ResponseBody
-    public byte[] imgLoad(String img){
-        return commonService.imgLoad(img);
-    }
-
     @GetMapping("/")
     public String index(Model model){
         model.addAttribute("top10",productService.top10());
         return "index";
     }
+
+    @PostMapping("/productSave")
+    public int productSave(ProductDto productDto, MultipartFile img){
+        return productService.productSave(productDto,img);
+    }
+
+    @PostMapping("/productList")
+    public List<ProductDto> productList(String saleYn){
+        return productService.productList(saleYn);
+    }
+
+    @PostMapping("/productUpdate")
+    public int productUpdate(ProductDto productDto){
+        return productService.productUpdate(productDto);
+    }
+
+    @PostMapping("/getProduct")
+    @ResponseBody
+    public ProductDto getProduct(String productId){
+        return productService.getProduct(productId);
+    }
+
+    @GetMapping("/imgLoad")
+    @ResponseBody
+    public byte[] imgLoad(String img){
+        return commonService.imgLoad(img);
+    }
+
 
     @GetMapping("/listAll/{category}")
     public String listAll(Model model, @PathVariable("category") String category){

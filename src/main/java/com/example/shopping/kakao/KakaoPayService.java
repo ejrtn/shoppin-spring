@@ -2,18 +2,17 @@ package com.example.shopping.kakao;
 
 import com.example.shopping.delivery.DeliveryDto;
 import com.example.shopping.delivery.DeliveryService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -39,7 +38,7 @@ public class KakaoPayService {
         return headers;
     }
 
-    public KakaoReadyResponse kakaoPayReady(DeliveryDto deliveryDto) {
+    public KakaoReadyResponse kakaoPayReady(DeliveryDto deliveryDto,String addr) {
         KakaoReadyReqDto kakaoReadyReqDto = new KakaoReadyReqDto();
         kakaoReadyReqDto.setCid(cid);
         kakaoReadyReqDto.setPartner_order_id("1");
@@ -49,9 +48,9 @@ public class KakaoPayService {
         kakaoReadyReqDto.setQuantity(deliveryDto.getQuantity());
         kakaoReadyReqDto.setTotal_amount(deliveryDto.getTotalAmount());
         kakaoReadyReqDto.setTax_free_amount(0);
-        kakaoReadyReqDto.setApproval_url("http://localhost:8080/kakaoPayment/approve?");
-        kakaoReadyReqDto.setCancel_url("http://localhost:8080/kakaoPayment/cancel");
-        kakaoReadyReqDto.setFail_url("http://localhost:8080/kakaoPayment/fail");
+        kakaoReadyReqDto.setApproval_url("http://"+addr+"/kakaoPayment/approve?");
+        kakaoReadyReqDto.setCancel_url("http://"+addr+"/kakaoPayment/cancel");
+        kakaoReadyReqDto.setFail_url("http://"+addr+"/kakaoPayment/fail");
 
         //파라미터, 헤더
         HttpEntity<KakaoReadyReqDto> requestEntity = new HttpEntity<>(kakaoReadyReqDto, this.getHeaders());
