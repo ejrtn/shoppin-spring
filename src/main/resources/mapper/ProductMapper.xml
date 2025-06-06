@@ -7,7 +7,7 @@
     <insert id="productSave">
         INSERT INTO products
         (
-            , productName
+            productName
             , price
             , category
             , explanation
@@ -18,7 +18,7 @@
             , cnt
         )
         VALUES(
-            , #{productName}
+            #{productName}
             , #{price}
             , #{category}
             , #{explanation}
@@ -29,19 +29,26 @@
             , #{cnt}
         );
     </insert>
-
+    <select id="productTotal" resultType="int">
+        SELECT
+            count(*)
+        FROM products
+    </select>
     <select id="productList" resultType="Map">
         SELECT
-            , productName
+            productName
             , price
             , category
             , explanation
             , productId
+            , saleYn
             , img
             , discount
+            , numberOfSalse
             , smallCategory
             , cnt
         FROM products
+        limit #{start}, 5
     </select>
 
     <update id="productUpdate">
@@ -58,6 +65,11 @@
             , cnt = #{cnt}
         WHERE productId=#{productId}
     </update>
+
+    <delete id="productDelete">
+        DELETE FROM products
+        WHERE productId=#{productId};
+    </delete>
 
     <select id="top10" resultType="Map">
         SELECT

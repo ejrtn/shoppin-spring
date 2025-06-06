@@ -47,15 +47,17 @@ public class ChatService extends TextWebSocketHandler {
             chatRoomSessionMap.computeIfAbsent(chatMessage.getRoomId(), s -> new HashSet<>()).add(session);
             chatMessage.setMessage(userMapper.chatInfo(chatMessage.getRoomId()) + "님");
 
-        } else if (chatMessage.getType().equals(ChatMessage.MessageType.QUIT)) {
+        } else if (chatMessage.getType().equals(ChatMessage.MessageType.QUIT) && chatMessage.getRoomId() != null) {
             chatRoomSessionMap.get(chatMessage.getRoomId()).remove(session);
             chatMessage.setMessage(userMapper.chatInfo(chatMessage.getRoomId()) + "님");
         }else{
-            ChatDto chatDto = new ChatDto();
-            chatDto.setMessage(chatMessage.getMessage());
-            chatDto.setSender(chatMessage.getSender());
-            chatDto.setTableName("chat_"+chatMessage.getRoomId()+"_history");
-            chatMapper.chatSave(chatDto);
+            if(chatMessage.getRoomId() != null) {
+                ChatDto chatDto = new ChatDto();
+                chatDto.setMessage(chatMessage.getMessage());
+                chatDto.setSender(chatMessage.getSender());
+                chatDto.setTableName("chat_" + chatMessage.getRoomId() + "_history");
+                chatMapper.chatSave(chatDto);
+            }
         }
         if(chatRoomSessionMap.get(chatMessage.getRoomId())!=null) {
             for (WebSocketSession s : chatRoomSessionMap.get(chatMessage.getRoomId())) {

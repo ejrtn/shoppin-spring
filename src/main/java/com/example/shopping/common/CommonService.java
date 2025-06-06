@@ -33,6 +33,9 @@ public class CommonService {
             throw new RuntimeException("File Error");
         }
     }
+    public String fileSave(){
+        return "";
+    }
     public String getClientIP(HttpServletRequest request) {
         String clientIp = "";
         clientIp = request.getHeader("X-Forwarded-For");

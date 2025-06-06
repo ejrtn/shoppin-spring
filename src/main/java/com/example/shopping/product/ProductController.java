@@ -4,10 +4,7 @@ import com.example.shopping.common.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
@@ -27,13 +24,21 @@ public class ProductController {
     }
 
     @PostMapping("/productSave")
-    public int productSave(ProductDto productDto, MultipartFile img){
-        return productService.productSave(productDto,img);
+    @ResponseBody
+    public int productSave(@RequestPart("productDto") ProductDto productDto,@RequestPart("file") MultipartFile file){
+        return productService.productSave(productDto,file);
     }
 
     @PostMapping("/productList")
-    public List<ProductDto> productList(String saleYn){
-        return productService.productList(saleYn);
+    @ResponseBody
+    public ProductList productList(@RequestParam int num){
+        return productService.productList(num);
+    }
+
+    @PostMapping("/productDelete")
+    @ResponseBody
+    public int productDelete(@RequestParam List<String> products){
+        return productService.productDelete(products);
     }
 
     @PostMapping("/productUpdate")
