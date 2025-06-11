@@ -4,6 +4,13 @@
 
 <mapper namespace="com.example.shopping.user.UserMapper">
 
+    <update  id="createUserChatHistory">
+        CREATE TABLE #{userId} (
+            cdate timestamp NULL DEFAULT current_timestamp(),
+            message text DEFAULT NULL,
+            sender varchar(100) DEFAULT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    </update>
 
     <insert id="userSave">
         INSERT INTO user

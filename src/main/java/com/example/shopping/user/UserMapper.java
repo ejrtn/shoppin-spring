@@ -9,6 +9,8 @@ import java.util.Map;
 @Mapper
 public interface UserMapper {
 
+    void createUserChatHistory(String userId);
+
     int userSave(UserDto userDto);
 
     int userDelete(String userId);

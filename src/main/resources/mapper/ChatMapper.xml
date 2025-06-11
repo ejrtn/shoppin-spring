@@ -4,21 +4,24 @@
 
 <mapper namespace="com.example.shopping.chatting.ChatMapper">
     <insert id="chatSave">
-        INSERT INTO ${tableName}
+        INSERT INTO chat_history
         (
             message
             , sender
+            , userId
         )
         VALUES(
             #{message}
             , #{sender}
+            , #{userId}
         )
     </insert>
     <select id="chatList" resultType="Map">
         SELECT
             message
             , sender
-        FROM ${tableName}
-        WHERE cdate >= date_add(now(), interval -7 day)
+        FROM chat_history
+        WHERE userId=#{userId} AND cdate >= date_add(now(), interval -7 day)
+
     </select>
 </mapper>

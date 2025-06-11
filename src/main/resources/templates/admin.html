@@ -92,7 +92,14 @@
             display: flex;
             flex-flow: column;
         }
-        .chat span{
+        .chat-head{
+            display: flex;
+            justify-content: space-between;
+        }
+        .chat span:nth-child(1){
+            font-weight: 900;
+        }
+        .chat span:nth-child(2){
             cursor: pointer;
             font-weight: 900;
         }
@@ -426,7 +433,7 @@
                 <p class="title">사용자 목록</p>
             </div>
             <div class="chat" id="">
-               <div class="chat-head"><span class="customer-name">사용자 미선택</span></div>
+               <div class="chat-head"><span class="customer-name">사용자 미선택</span><span class="chat-close">X</span></div>
                <div class="chatting"><div class="old-chat"></div></div>
                <div id="write_area" class="write_area" contenteditable="true" ondragenter="return false;" ondrop="return false;" ondragover="return false;"></div>
             </div>
@@ -516,7 +523,7 @@
         }
         if (event.keyCode === 16) { key['shift'] = 1 }
         if (event.keyCode === 13 && key['shift'] === 0) {
-            sendMsg(event)
+            if(document.querySelector(".chat").id != '') sendMsg(event);
             // 두 번 동작하는 것을 막기 위해 기본 동작을 취소합니다.
             event.preventDefault();
         }
@@ -544,25 +551,7 @@
         if(data.type != 'HELLO' && data.roomId != 'admin'){
             
             if(data.type == 'JOIN'){
-                document.querySelector(".customer-name").textContent = data.message
-                document.querySelector(".chat").id = data.roomId
-                $.ajax({
-                    url : '/chatList',
-                    type : 'POST',
-                    data : {"userId":data.roomId},
-                    success : function(chat){
-                        const chatting = document.querySelector(".chatting");
-                        chatting.innerHTML = '<div class="old-chat"></div>'
-                        for(let i=0;i<chat.length;i++){
-                            let t = '<p class="message">'+(chat[i].sender=='admin'?'나 : ':'고객 : ')+chat[i].message+'</p>'
-                            chatting.innerHTML += t
-                            chatting.scrollTop = chatting.scrollHeight
-                        }
-                    },
-                    error : function(error){
-                        console.log(error)
-                    }
-                });
+                
             }else if(data.type == 'QUIT'){
 
             }else{
@@ -588,8 +577,29 @@
             let roomId = e.target.previousElementSibling.textContent.split("(")[1].split(")")[0]
             
             if(document.querySelector("#"+roomId) == null){
-                let enterMsg={"type" : "JOIN","roomId":roomId,"sender":"admin","message":""};
-                websocket.send(JSON.stringify(enterMsg));
+                // let enterMsg={"type" : "JOIN","roomId":roomId,"sender":"admin","message":""};
+                // websocket.send(JSON.stringify(enterMsg));
+                
+                document.querySelector(".customer-name").textContent = e.target.previousElementSibling.textContent
+                document.querySelector(".chat").id = roomId
+                $.ajax({
+                    url : '/chatList',
+                    type : 'POST',
+                    data : {"userId":roomId},
+                    success : function(chat){
+                        document.querySelector(".chatting").innerHTML = '<div class="old-chat"></div>'
+                        const chatting = document.querySelector(".chatting .old-chat");
+                        chatting.innerHTML = ''
+                        for(let i=0;i<chat.length;i++){
+                            let t = '<p class="message">'+(chat[i].sender=='admin'?'나 : ':'고객 : ')+chat[i].message+'</p>'
+                            chatting.innerHTML += t
+                            document.querySelector(".chatting").scrollTop = chatting.scrollHeight
+                        }
+                    },
+                    error : function(error){
+                        console.log(error)
+                    }
+                });
             }
         }
     })
@@ -626,7 +636,7 @@
             let el = document.querySelectorAll(".number button")
             for(let i=0;i<el.length;i++){
                 if(el[i].classList.contains("blue")){     
-                    if(parseInt(el[i].textContent) - 1 > 1) productList(parseInt(el[i].textContent) - 1)
+                    if(parseInt(el[i].textContent) - 1 > 0) productList(parseInt(el[i].textContent) - 1)
                     break
                 }
             }
@@ -796,6 +806,13 @@
             }
         });
     })
+
+    document.querySelector(".chat-close").addEventListener("click",()=>{
+        document.querySelector(".chat").id = ''
+        document.querySelector(".customer-name").textContent = '사용자 미선택'
+        document.querySelector(".chatting").innerHTML = '<div class="old-chat"></div>'
+    })
+    
     function chatInfo(){
         $.ajax({
             url : '/userList',
@@ -809,6 +826,8 @@
                             '<div class="add">+</div>' +
                         '</span>'
                     document.querySelector(".user-list").innerHTML += t
+                    let enterMsg={"type" : "JOIN","roomId":data[i].userId,"message":""};
+                    websocket.send(JSON.stringify(enterMsg));
                 }
             },
             error : function(error){

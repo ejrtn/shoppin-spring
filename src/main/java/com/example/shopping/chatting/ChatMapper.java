@@ -9,5 +9,5 @@ public interface ChatMapper {
 
     int chatSave(ChatDto chatDto);
 
-    List<ChatDto> chatList(String tableName);
+    List<ChatDto> chatList(String userId);
 }

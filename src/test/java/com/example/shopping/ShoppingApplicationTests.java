@@ -10,6 +10,7 @@ class ShoppingApplicationTests {
 
 	@Test
 	void contextLoads(HttpServletRequest request) {
+
 	}
 
 }

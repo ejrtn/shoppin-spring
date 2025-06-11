@@ -23,6 +23,10 @@ public class UserService{
     @Value("${spring.mail.username}")
     String naverId;
 
+    public void createUserChatHistory(String userId){
+        userMapper.createUserChatHistory(userId);
+    }
+
     public int userSave(UserDto userDto){
         return userMapper.userSave(userDto);
     }

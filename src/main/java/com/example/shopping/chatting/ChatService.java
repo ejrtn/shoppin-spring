@@ -55,7 +55,7 @@ public class ChatService extends TextWebSocketHandler {
                 ChatDto chatDto = new ChatDto();
                 chatDto.setMessage(chatMessage.getMessage());
                 chatDto.setSender(chatMessage.getSender());
-                chatDto.setTableName("chat_" + chatMessage.getRoomId() + "_history");
+                chatDto.setUserId(chatMessage.getRoomId());
                 chatMapper.chatSave(chatDto);
             }
         }
@@ -78,6 +78,6 @@ public class ChatService extends TextWebSocketHandler {
     }
 
     public List<ChatDto> chatList(String userId){
-        return chatMapper.chatList("chat_"+userId+"_history");
+        return chatMapper.chatList(userId);
     }
 }
