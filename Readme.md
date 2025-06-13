@@ -1,15 +1,19 @@
 # SHOPPING PROJECT
-퇴사 이후 웹 개발자로 1년이 넘어 가게 되면서 웹 개발에 대한 기억을 잊지 않고 새로운것을 추가하고자 이전에 했던 쇼핑몰과  추가적으로 AWS, Jenkins를 추가해서 프로젝트를 만들고자 합니다.
+퇴사 이후 웹 개발자로 1년이 넘어 가게 되면서 웹 개발에 대한 기억을 잊지 않고 새로운것을 추가하고자 이전에 했던 쇼핑몰 프로젝트를 만들고자 합니다.
 <br><br><br>
 
 ## 환경
 - DB : mariadb(Oracle VM Rocky Linux)
-- 언어 : JAVA
+- 언어 : JAVA(17.0.15)
 - 프레임워크 : SPRING BOOT
+- Jenkins version : 11.0.7
+- jenkins_pipeline.txt 참고
+- git version : 2.47.1
 <br><br><br>
 
 ## DB 테이블
 ![alt text](image.png)
+- create_table.txt << 테이블 생성 SQL
 <br><br><br>
 
 ## 메인

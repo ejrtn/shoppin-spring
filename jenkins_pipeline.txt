@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    environment {
+        WAR_NAME = 'shopping.war'
+        REMOTE_USER = 'tomcat' // Tomcat 서버 사용자
+        REMOTE_PATH = '/opt/apache-tomcat-11.0.7/webapps' // WAR 배포 경로
+    }
+
+    stages {
+        stage('Check Java') {
+            steps {
+                sh 'java -version'
+                sh 'echo JAVA_HOME is $JAVA_HOME'
+            }
+        }
+        stage('Clone from GitHub') {
+            steps {
+                git url: 'git@github.com:ejrtn/shopping.git', branch: 'main'
+            }
+        }
+
+        stage('Build with Gradle') {
+            steps {
+                sh 'chmod +x ./gradlew'
+                sh './gradlew clean build -x test'
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                // WAR 파일 복사 (예: scp 사용)
+                sh """
+                    cp build/libs/${WAR_NAME} ${REMOTE_PATH}/${WAR_NAME}
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Tomcat 배포 성공"
+        }
+        failure {
+            echo "❌ 빌드 또는 배포 실패"
+        }
+    }
+}
