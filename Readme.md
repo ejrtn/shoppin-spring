@@ -1,19 +1,24 @@
-# SHOPPING PROJECT
-퇴사 이후 웹 개발자로 1년이 넘어 가게 되면서 웹 개발에 대한 기억을 잊지 않고 새로운것을 추가하고자 이전에 했던 쇼핑몰 프로젝트를 만들고자 합니다.
+## 📌 프로젝트 개요
+
+- 개인 학습 및 포트폴리오용으로 제작한 쇼핑몰 시스템
+- Spring Boot + Mybatis를 기반으로 상품 목록, 장바구니, 주문 기능을 구현
+- 프론트엔드는 Thymeleaf를 활용하여 서버 사이드 렌더링 방식으로 구성
 <br><br><br>
 
-## 환경
-- DB : mariadb(Oracle VM Rocky Linux)
-- 언어 : JAVA(17.0.15)
-- 프레임워크 : SPRING BOOT
-- Jenkins version : 11.0.7
-- jenkins_pipeline.txt 참고
-- git version : 2.47.1
+## 🛠 사용 기술
+
+| 구분        | 기술                         |
+|-------------|-----------------------------|
+| Language    | Java 17                     |
+| Framework   | Spring Boot                 |
+| Database    | mariadb                     |
+| Front-end   | Thymeleaf, HTML, CSS, JS    |
+| Tool/Infra  | Gradle, GitHub,Jenkins      |
 <br><br><br>
 
 ## DB 테이블
 ![alt text](image.png)
-- create_table.txt << 테이블 생성 SQL
+- 테이블 생성 SQL : create_table.txt
 <br><br><br>
 
 ## 메인
@@ -131,13 +136,3 @@
 - 초록색 : 새로운 채팅
 - 채팅은 데이터가 저장되며, 7일 이내의 내용만 확인 가능, 새로고침하면 과거채팅과 새로운 채팅이 다시 나눠짐
 - 카카오톡처럼 채팅창을 열고 있지 않은 상태에서 메세지가오면 사용자 왼쪽에 싸인 숫자가 표시됨(max 99)
-
-## tomcat war 베포
-![alt text](image-17.png)
-- rocky 리눅스에 java 17 설치
-- /opt/위치에 tomcat 11 버전 설치
-- server.xml에서 port 9090으로 변경 및 context 추가
-```
-<Context path="" docBase="shopping"  reloadable="false" > </Context>
-```
-- 제품 이미지 tomcat에 위치
