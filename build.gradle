@@ -1,6 +1,5 @@
 plugins {
 	id 'java'
-	id 'war'
 	id 'org.springframework.boot' version '3.4.3'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -31,7 +30,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.projectlombok:lombok'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+//	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -44,12 +43,16 @@ dependencies {
 	implementation("org.json:json:20240303")
 }
 
-bootWar{
-	archiveFileName = 'shopping.war' // war 파일명
+bootJar{
+	archiveFileName = 'shopping.jar' // war 파일명
 }
 
-bootWar.enabled = true
-war.enabled = false
+//bootWar{
+//	archiveFileName = 'shopping.war' // war 파일명
+//}
+
+//bootWar.enabled = true
+//war.enabled = false
 
 tasks.named('test') {
 	useJUnitPlatform()
