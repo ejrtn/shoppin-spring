@@ -19,7 +19,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd ~/my-spring-app
+            cd ~/shopping-spring
             git pull origin main
             ./gradlew bootJar
             docker-compose down
