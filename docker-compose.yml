@@ -20,7 +20,7 @@ services:
     container_name: mariadb
     restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: rootpass
+      MARIADB_ROOT_PASSWORD: root
       MARIADB_DATABASE: shopping
       MARIADB_USER: user
       MARIADB_PASSWORD: user
