@@ -136,3 +136,14 @@
 - 초록색 : 새로운 채팅
 - 채팅은 데이터가 저장되며, 7일 이내의 내용만 확인 가능, 새로고침하면 과거채팅과 새로운 채팅이 다시 나눠짐
 - 카카오톡처럼 채팅창을 열고 있지 않은 상태에서 메세지가오면 사용자 왼쪽에 싸인 숫자가 표시됨(max 99)
+
+
+## docker
+![alt text](image-18.png)
+- Docker, docker-compose.yml, img, init-db, .jar 파일 수동 이동
+- 명령어
+    ```
+    빌드 : docker build -t shopping-spring .
+    컴포즈 : docker-compose up -d
+    로그확인 : docker logs shopping-spring
+    ```
