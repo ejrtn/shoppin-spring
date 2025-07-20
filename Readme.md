@@ -18,7 +18,7 @@
 
 ## DB 테이블
 ![alt text](image.png)
-- 테이블 생성 SQL : create_table.sql
+- 테이블 생성 SQL : init.sql
 <br><br><br>
 
 ## 메인
