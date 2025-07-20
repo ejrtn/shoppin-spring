@@ -1,5 +1,4 @@
 FROM eclipse-temurin:17-jdk
-WORKDIR /app
-COPY build/libs/shopping.jar shopping.jar
+COPY *.jar shopping-spring.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "shopping.jar"]
+ENTRYPOINT ["java", "-jar", "/shopping-spring.jar"]

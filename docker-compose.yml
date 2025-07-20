@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    image: shopping-spring
     container_name: shopping-spring
     ports:
       - "8080:8080"
@@ -26,6 +26,7 @@ services:
       MARIADB_PASSWORD: user
     volumes:
       - mariadb_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d  # 📌 SQL 스크립트 실행 경로
     ports:
       - "3306:3306"
     networks:
