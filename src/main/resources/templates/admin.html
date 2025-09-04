@@ -699,14 +699,16 @@
     })
     document.querySelector(".color-count-list").addEventListener("click",(e)=>{
         if(e.target.tagName=='SPAN' && e.target.textContent == '+'){
-            let t = '<div class="color-count">'
-                t +=     '<input class="color-text" type="text" placeholder="색상(ex #666666)">'
+            let t =     '<input class="color-text" type="text" placeholder="색상(ex #666666)" value="">'
                 t +=     '<div class="color"></div>'
                 t +=     '<input class="size-text" type="text" placeholder="사이즈">'
                 t +=     '<input class="count-text" type="text" placeholder="수량" oninput="this.value = this.value.replace(/[^0-9.]/g, \'\')">'
                 t +=     '<span>+</span>'
-                t += '</div>'    
-            document.querySelector(".color-count-list").innerHTML += t
+            const div = document.createElement('div');
+            div.className = "color-count"
+            div.innerHTML = t
+            document.querySelector(".color-count-list").appendChild(div)
+            // document.querySelector(".color-count-list").innerHTML += t
             let el = document.querySelectorAll(".color-count-list span")
             for(let i=0;i<el.length;i++){
                 if(el[i].textContent == "+"){
